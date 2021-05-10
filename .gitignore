@@ -1,6 +1,8 @@
 .vscode/
 req_*.txt
 tmp/
+media/
+static/
 
 .DS_Store
 
