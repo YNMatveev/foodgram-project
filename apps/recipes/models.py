@@ -1,8 +1,9 @@
-from django.db import models
 from django.contrib.auth import get_user_model
-from stdimage import StdImageField
+from django.db import models
+from django.db.models import Max
 from multiselectfield import MultiSelectField
 from pytils.translit import slugify
+from stdimage import StdImageField
 
 User = get_user_model()
 
@@ -37,7 +38,8 @@ class Recipe(models.Model):
     cooking_time = models.PositiveIntegerField(
         verbose_name='Cooking time, minutes')
 
-    slug = models.SlugField(max_length=200, unique=True, verbose_name='Slug')
+    slug = models.SlugField(max_length=200, verbose_name='Slug', unique=True,
+                            blank=True)
 
     created = models.DateTimeField(verbose_name='Published Date',
                                    auto_now_add=True)
@@ -48,15 +50,15 @@ class Recipe(models.Model):
     def __str__(self):
         return self.title
 
-    @property
-    def get_times_to_favorites(self):
-        return self.favorites.count()
-
-    get_times_to_favorites.fget.short_description = (
-        'Times recipe add in favorites')
-
     def save(self, *args, **kwargs):
-        suffix = Recipe.objects.count() + 1
+        if self.id:
+            suffix = self.id
+        else:
+            last_id = Recipe.objects.aggregate(last=Max('id'))['last']
+            if not last_id:
+                last_id = 0
+            suffix = last_id + 1
+
         self.slug = slugify(self.title)[:100] + '-' + str(suffix)
         super().save(*args, **kwargs)
 

@@ -20,7 +20,7 @@ from django.urls import path
 
 
 admin.site.site_header = "Foodgram Admin"
-admin.site.site_title = "Foodgram Admin"
+admin.site.site_title = "Foodgram Admin Panel"
 admin.site.index_title = "Welcome to Foodgram"
 
 urlpatterns = [

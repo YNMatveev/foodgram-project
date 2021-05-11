@@ -1,9 +1,14 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django.contrib.auth.models import Group
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth import get_user_model
 
 from recipes.models import (Favorite, Ingredient, IngredientRecipeMap, Recipe,
                             Subscribe)
+
+
+User = get_user_model()
 
 
 class IngredientRecipeMapInline(admin.TabularInline):
@@ -26,17 +31,23 @@ class RecipeAdmin(admin.ModelAdmin):
     search_fields = ('title', 'author__username',)
     fields = (
         ('author', 'title', 'slug'),
+        ('created', 'modified'),
         ('image', 'show_image'),
         ('tag', 'cooking_time', 'description'),
-        'get_times_to_favorites',
+        'count_times_in_favorite'
     )
     inlines = (IngredientRecipeMapInline,)
-    readonly_fields = ('get_times_to_favorites', 'show_image',)
-
-    #  save_on_top = True
+    readonly_fields = ('show_image', 'count_times_in_favorite', 'created',
+                       'modified')
 
     def show_image(self, obj):
-        return mark_safe(f'<img src="{obj.image.url}" width="40%" />')
+        return mark_safe(f'<img src="{obj.image.url}" height="150px" />')
+
+    def count_times_in_favorite(self, obj):
+        return obj.favorites.count()
+
+    count_times_in_favorite.short_description = (
+        'Times recipe add in favorites')
 
 
 class FavoriteAdmin(admin.ModelAdmin):
@@ -51,9 +62,15 @@ class SubscribeAdmin(admin.ModelAdmin):
     search_fields = ('subscriber', 'author',)
 
 
+class MyUserAdmin(UserAdmin):
+    list_filter = ('username', 'email', 'is_staff', 'is_superuser',)
+
+
+admin.site.unregister(Group)
+admin.site.unregister(User)
+
+admin.site.register(User, MyUserAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Favorite, FavoriteAdmin)
 admin.site.register(Subscribe, SubscribeAdmin)
-
-admin.site.unregister(Group)

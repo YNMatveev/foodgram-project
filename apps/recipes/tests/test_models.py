@@ -109,13 +109,6 @@ class RecipeModelTest(TestCase):
         self.recipe.refresh_from_db()
         self.assertEquals(self.recipe.author.username, 'deleted')
 
-    def test_counter_recipe_in_favorites(self):
-        user = User.objects.create_user('Current_user')
-        _ = Favorite.objects.create(chooser=user, recipe=self.recipe)
-        expected_value = 1
-        counter = self.recipe.get_times_to_favorites
-        self.assertEquals(counter, expected_value)
-
 
 class FavoriteModelTest(TestCase):
 
