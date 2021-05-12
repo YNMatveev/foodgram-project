@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}Default{% endblock %}</title>
+    {% load static %}
+    {% block stylesheet %}<link rel="stylesheet" href="#"{% endblock %}>
+</head>
+<body class="body">
+  {% include 'elements/nav.html' %}
+    <main class="main container">
+        <div class="main__header">
+            <h1 class="main__title">{% block header %}Default{% endblock %}</h1>
+          
+            <!-- Tags filter -->
+          
+        </div>
+        
+        {% block content %}
+        <!-- General page content -->
+        {% endblock %}
+        
+        <!-- Pagination -->
+    </main>
+    {% include 'elements/footer.html' %}
+  
+  {% block sripts %}
+  <!-- All scripts here -->
+  {% endblock %}
+
+</body>
+</html>
