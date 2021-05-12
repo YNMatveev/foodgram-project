@@ -8,7 +8,7 @@ User = get_user_model()
 
 def create_test_recipe(author, title):
     return Recipe.objects.create(
-        author=author, title=title, tag=Recipe.Tag.DINNER,
+        author=author, title=title, tags=Recipe.Tag.DINNER,
         description='Порядок приготовления', cooking_time=20
     )
 
@@ -65,7 +65,7 @@ class RecipeModelTest(TestCase):
         super().setUpClass()
 
     def setUp(self):
-        self.author = User.objects.create_user(username='John')
+        self.author = User.objects.create_user(username='Bill')
         self.recipe = create_test_recipe(author=self.author, title='Стейк')
 
     def test_verbose_name(self):
@@ -76,7 +76,7 @@ class RecipeModelTest(TestCase):
             'description': 'Recipe Description',
             'ingredients': 'Required ingredients',
             'image': 'Photo of the dish',
-            'tag': 'Tags',
+            'tags': 'Tags',
             'cooking_time': 'Cooking time, minutes',
             'slug': 'Slug',
             'created': 'Published Date',

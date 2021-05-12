@@ -25,15 +25,15 @@ class IngredientAdmin(admin.ModelAdmin):
 
 class RecipeAdmin(admin.ModelAdmin):
 
-    list_display = ('id', 'title', 'author', 'tag', )
+    list_display = ('id', 'title', 'author', 'tags', )
     ordering = ('id',)
-    list_filter = ('title', 'author__username', 'tag',)
+    list_filter = ('title', 'author__username', 'tags',)
     search_fields = ('title', 'author__username',)
     fields = (
         ('author', 'title', 'slug'),
         ('created', 'modified'),
         ('image', 'show_image'),
-        ('tag', 'cooking_time', 'description'),
+        ('tags', 'cooking_time', 'description'),
         'count_times_in_favorite'
     )
     inlines = (IngredientRecipeMapInline,)

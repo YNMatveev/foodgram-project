@@ -16,8 +16,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
-
+from django.urls import include, path
 
 admin.site.site_header = "Foodgram Admin"
 admin.site.site_title = "Foodgram Admin Panel"
@@ -25,6 +24,7 @@ admin.site.index_title = "Welcome to Foodgram"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('recipes.urls', namespace='recipes'))
 ]
 
 

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Рецепты{% endblock %}
-
+{% load static %}
 {% block stylesheet %}<link rel="stylesheet" href="{% static 'pages/index.css' %}">{% endblock %}
 
 {% block header %}Рецепты{% endblock %}
@@ -13,7 +13,7 @@
 
 <div class="card-list">
         <div class="card" data-id="120">
-            <a href="#" class="link" target="_blank"><img src="./images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
+            <a href="#" class="link" target="_blank"><img src="{% static 'images/testCardImg.png' %}" alt="Какой-то текст" class="card__image"></a>
             <div class="card__body">
                 <a class="card__title link" href="#" target="_blank">Французские тосты</a>
                 <ul class="card__items">
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="card" data-id="121">
-            <a href="#" class="link" target="_blank"><img src="./images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
+            <a href="#" class="link" target="_blank"><img src="{% static 'images/testCardImg.png' %}" alt="Какой-то текст" class="card__image"></a>
             <div class="card__body">
                 <a class="card__title link" href="#" target="_blank">Французские тосты</a>
                 <ul class="card__items">
@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="card" data-id="122">
-            <a href="#" class="link" target="_blank"><img src="./images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
+            <a href="#" class="link" target="_blank"><img src="{% static 'images/testCardImg.png' %}" alt="Какой-то текст" class="card__image"></a>
             <div class="card__body">
                 <a class="card__title link" href="#" target="_blank">Французские тосты</a>
                 <ul class="card__items">
@@ -70,7 +70,7 @@
             </div>
         </div>
         <div class="card" data-id="123">
-            <a href="#" class="link" target="_blank"><img src="./images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
+            <a href="#" class="link" target="_blank"><img src="{% static 'images/testCardImg.png' %}" alt="Какой-то текст" class="card__image"></a>
             <div class="card__body">
                 <a class="card__title link" href="#" target="_blank">Французские тосты</a>
                 <ul class="card__items">
@@ -89,7 +89,7 @@
             </div>
         </div>
         <div class="card" data-id="124">
-            <a href="#" class="link" target="_blank"><img src="./images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
+            <a href="#" class="link" target="_blank"><img src="{% static 'images/testCardImg.png' %}" alt="Какой-то текст" class="card__image"></a>
             <div class="card__body">
                 <a class="card__title link" href="#" target="_blank">Французские тосты</a>
                 <ul class="card__items">
@@ -112,7 +112,7 @@
 {% endblock %}
 
 {% block pagination %}
-  {% include 'elements/paginator.html %}
+  {% include 'elements/paginator.html' %}
 {% endblock %}
 
 {% block scripts %}

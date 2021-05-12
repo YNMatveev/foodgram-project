@@ -14,7 +14,7 @@ class RecipeAdminTest(TestCase):
         cls.author = User.objects.create_user(username='John')
         cls.user = User.objects.create_user(username='User')
         cls.recipe = Recipe.objects.create(
-            author=cls.author, title='Стейк', tag=Recipe.Tag.DINNER,
+            author=cls.author, title='Стейк', tags=Recipe.Tag.DINNER,
             description='Порядок приготовления', cooking_time=20
         )
         cls.favorite = Favorite.objects.create(chooser=cls.user,

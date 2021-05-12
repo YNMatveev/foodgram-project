@@ -33,7 +33,8 @@ class Recipe(models.Model):
         'recipes.Ingredient', through='recipes.IngredientRecipeMap',
         related_name='recipes', verbose_name='Required ingredients')
 
-    tag = MultiSelectField(verbose_name='Tags', choices=Tag.choices)
+    tags = MultiSelectField(verbose_name='Tags', choices=Tag.choices,
+                            default=Tag.BREAKFAST)
 
     cooking_time = models.PositiveIntegerField(
         verbose_name='Cooking time, minutes')
