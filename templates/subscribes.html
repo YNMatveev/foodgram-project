@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Мои подписки{% endblock %}
+{% load static %}
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'pages/myFollow.css' %}">{% endblock %}
+
+{% block header %}Мои подписки{% endblock %}
+
+{% block content %}
+<div class="card-list">
+    {% for author in authors %}
+    <div class="card-user" data-author="{{ author.id }}">
+        <div class="card-user__header">
+            <h2 class="card-user__title">
+                <a class="card-user__title link" href="{% url 'recipes:profile' author %}" target="_blank">
+                {% firstof author.get_full_name author %}
+                </a>
+            </h2>
+        </div>
+        <div class="card-user__body">
+            <ul class="card-user__items">
+                {% for recipe in author.recipes.all %}
+                {% if forloop.counter <= 3 %}
+                <li class="card-user__item">
+                    <div class="recipe">
+                        <img src="{{ recipe.image.url }}" alt="какой-то-текст" class="recipe__image">
+                        <a class="recipe__title link" href="{{ recipe.get_absolute_url }}" target="_blank"> {{ recipe.title }}</a>
+                        <p class="recipe__text"><span class="icon-time"></span> {{ recipe.cooking_time }} мин.</p>
+                    </div>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {% with author.recipes.count as count %}
+                {% if count > 3 %}
+                <li class="card-user__item">
+                    <a href="{% url 'recipes:profile' author %}" class="card-user__link link">Еще {{ count|add:-3 }} рецептов...</a>
+                </li>
+                {% endif %}
+                {% endwith %}
+            </ul>
+        </div>
+        <div class="card-user__footer">
+        {% if author.is_subscribe %}
+            <button class="button button_style_light-blue button_size_subscribe" name="subscribe">Отписаться от автора</button>
+          {% else %}
+            <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>
+          {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block pagination %}
+    {% include 'elements/paginator.html' %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/MainCards.js' %}"></script>
+    <script src="{% static 'js/components/MyFollow.js' %}"></script>
+    <script src="{% static 'js/components/Subscribe.js' %}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
+    <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'myFollow.js' %}"></script>
+{% endblock %}

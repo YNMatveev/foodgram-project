@@ -4,8 +4,9 @@ import random
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from recipes.factories import RecipeFactory, UserFactory
 from recipes.models import Favorite, IngredientRecipeMap, Recipe, Subscribe
+from utils.factories import (IngredientRecipeMapFactory, RecipeFactory,
+                             UserFactory)
 
 User = get_user_model()
 
@@ -13,6 +14,8 @@ NUM_USERS = 10
 NUM_SUBSCRIBERS = 3
 NUM_FAVORITES = 25
 RECIPE_PER_TAGS = 3
+MIN_INGREDIENTS = 3
+MAX_INGREDIENTS = 10
 
 
 class Command(BaseCommand):
@@ -30,43 +33,46 @@ class Command(BaseCommand):
 
         default_tags = [tag for tag in Recipe.Tag]
         tags_variations = []
-        for vars in range(1, len(default_tags)+1):
-            for subset in itertools.combinations(default_tags, vars):
+        for count in range(1, len(default_tags) + 1):
+            for subset in itertools.combinations(default_tags, count):
                 tags_variations.append(', '.join(list(subset)))
 
         # Create all the users
+        UserFactory.reset_sequence(2)
         users = UserFactory.create_batch(NUM_USERS)
 
         # Create all the recipes
-        id = 1
         for user in users:
             for tag in tags_variations:
                 for _ in range(RECIPE_PER_TAGS):
-                    RecipeFactory(author=user, tags=tag, id=id)
-                    id += 1
+                    recipe = RecipeFactory(author=user, tags=tag)
+                    number_ingredients = random.randint(
+                        MIN_INGREDIENTS, MAX_INGREDIENTS)
+                    for __ in range(number_ingredients):
+                        map_obj = IngredientRecipeMapFactory(recipe=recipe)
+                        recipe.ingredients.add(map_obj.ingredient)
 
-        id = 1
         for user in User.objects.exclude(id=1):
             recipes = list(Recipe.objects.exclude(author=user))
             to_favorite = random.sample(recipes, NUM_FAVORITES)
             Favorite.objects.bulk_create([
-                Favorite(chooser=user, recipe=recipe, id=id)
+                Favorite(chooser=user, recipe=recipe)
                 for recipe in to_favorite
             ])
             authors = list(User.objects.exclude(id=1, username=user.username))
             for_subscribe = random.sample(authors, NUM_SUBSCRIBERS)
             Subscribe.objects.bulk_create([
-                Subscribe(subscriber=user, author=author, id=id)
+                Subscribe(subscriber=user, author=author)
                 for author in for_subscribe
             ])
-            id += 1
 
         superadmin = User.objects.get(id=1)
         Favorite.objects.bulk_create([
-                Favorite(chooser=superadmin, recipe=recipe)
-                for recipe in Recipe.objects.all()
+            Favorite(chooser=superadmin, recipe=recipe)
+            for recipe in Recipe.objects.all()
         ])
+
         Subscribe.objects.bulk_create([
-                Subscribe(subscriber=superadmin, author=author)
-                for author in User.objects.exclude(id=1)
+            Subscribe(subscriber=superadmin, author=author)
+            for author in User.objects.exclude(id=1)
         ])

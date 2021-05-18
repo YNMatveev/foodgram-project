@@ -25,8 +25,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 class RecipeAdmin(admin.ModelAdmin):
 
-    list_display = ('id', 'title', 'author', 'tags', )
-    ordering = ('id',)
+    list_display = ('id', 'title', 'author', 'tags', 'created', )
     list_filter = ('title', 'author__username', 'tags',)
     search_fields = ('title', 'author__username',)
     fields = (

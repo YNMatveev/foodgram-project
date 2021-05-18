@@ -24,7 +24,8 @@ admin.site.index_title = "Welcome to Foodgram"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('recipes.urls', namespace='recipes'))
+    path('', include('recipes.urls', namespace='recipes')),
+    path('api/', include('api.urls', namespace='api')),
 ]
 
 

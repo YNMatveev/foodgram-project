@@ -1,4 +1,4 @@
-from random import choice, randint
+from random import choice
 
 import factory
 from django.contrib.auth import get_user_model
@@ -14,12 +14,25 @@ User = get_user_model()
 class UserFactory(DjangoModelFactory):
     class Meta:
         model = User
+
+    id = factory.sequence(lambda n: n)
     username = factory.Faker('user_name')
     email = factory.Faker('email')
     password = 'secret'
 
-    #  first_name = factory.Faker('first_name')
-    #  last_name = factory.Faker('last_name')
+    @factory.lazy_attribute
+    def last_name(self):
+        if choice([True, False]):
+            return factory.faker.faker.Faker().last_name()
+        else:
+            return ''
+
+    @factory.lazy_attribute
+    def first_name(self):
+        if choice([True, False]):
+            return factory.faker.faker.Faker().first_name()
+        else:
+            return ''
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
@@ -29,7 +42,8 @@ class UserFactory(DjangoModelFactory):
         return manager.create_user(*args, **kwargs)
 
 
-class BaseRecipeFactory(DjangoModelFactory):
+#  class BaseRecipeFactory(DjangoModelFactory):
+class RecipeFactory(DjangoModelFactory):
     class Meta:
         model = Recipe
 
@@ -38,10 +52,9 @@ class BaseRecipeFactory(DjangoModelFactory):
     created = factory.Faker('date_time_this_year')
     cooking_time = fuzzy.FuzzyInteger(5, 90)
     image = factory.django.ImageField(
-        from_path=('/Users/morf/Dev/course5_Diploma/foodgram-project'
-                   '/static_files/images/testCardImg.png'))
+        from_path=('static_files/images/testCardImg.png'))
     #  tags
-    description = factory.Faker('paragraph', nb_sentences=3,
+    description = factory.Faker('paragraph', nb_sentences=9,
                                 variable_nb_sentences=True)
 
     #  ingridients
@@ -53,17 +66,9 @@ class IngredientRecipeMapFactory(DjangoModelFactory):
     class Meta:
         model = IngredientRecipeMap
 
-    recipe = factory.SubFactory(BaseRecipeFactory)
-    quantity = fuzzy.FuzzyInteger(50, 500)
+    recipe = factory.SubFactory(RecipeFactory)
+    quantity = fuzzy.FuzzyInteger(1, 1000)
 
     @factory.lazy_attribute
     def ingredient(self):
         return choice(Ingredient.objects.all())
-
-
-class RecipeFactory(BaseRecipeFactory):
-
-    for _ in range(randint(3, 10)):
-        ingredient = factory.RelatedFactory(
-            IngredientRecipeMapFactory,
-            factory_related_name='recipe')

@@ -7,11 +7,11 @@ const configButton = {
         attr: 'data-out',
         default: {
             class: 'button_style_blue',
-            text: 'Отписаться'
+            text: 'Подписаться на автора'
         },
         active: {
             class: 'button_style_blue',
-            text: `Подписаться на автора`
+            text: `Отписаться от автора`
         }
     }
 }
@@ -19,5 +19,6 @@ const subscribe = new Subscribe(configButton.subscribe, api);
 const myFollow = new MyFollow(container, '.card-user', header, api, true,{
     subscribe
 })
+
 myFollow.addEvent();
 

@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Max
+from django.urls import reverse
 from multiselectfield import MultiSelectField
 from pytils.translit import slugify
 from stdimage import StdImageField
@@ -48,6 +49,9 @@ class Recipe(models.Model):
     modified = models.DateTimeField(verbose_name='Modified Date',
                                     auto_now=True)
 
+    class Meta:
+        ordering = ['-created']
+
     def __str__(self):
         return self.title
 
@@ -62,6 +66,10 @@ class Recipe(models.Model):
 
         self.slug = slugify(self.title)[:100] + '-' + str(suffix)
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('recipes:recipe_details',
+                       kwargs={'slug': self.slug})
 
 
 class Ingredient(models.Model):
@@ -79,8 +87,13 @@ class Ingredient(models.Model):
 class IngredientRecipeMap(models.Model):
 
     ingredient = models.ForeignKey(Ingredient, on_delete=models.DO_NOTHING)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                               related_name='required_ingredients')
     quantity = models.PositiveIntegerField()
+
+    def __str__(self):
+        return (f'{self.ingredient.name.capitalize()} - {self.quantity} '
+                f'{self.ingredient.units}.')
 
 
 class Favorite(models.Model):
