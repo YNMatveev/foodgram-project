@@ -1,9 +1,9 @@
 .vscode/
 req_*.txt
 tmp/
-media/
+media/*
 static/
-sent_emails/
+sent_emails/*
 
 .DS_Store
 
