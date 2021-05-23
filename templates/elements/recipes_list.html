@@ -26,8 +26,11 @@
         <div class="card__footer">
             {% if request.resolver_match.url_name == 'delete_recipe' %}
             {% else %}
+            {% if recipe.id in request.session.shopping_list %}
+            <button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span> Рецепт добавлен </button>
+            {% else %}
             <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-
+            {% endif %}
             {% if user.is_authenticated %}
                 <button class="button button_style_none" name="favorites" {% if not recipe.is_favorite %}data-out{% endif %}><span class="icon-favorite {% if recipe.is_favorite %}icon-favorite_active{% endif %}"></span></button>
             {% endif %}

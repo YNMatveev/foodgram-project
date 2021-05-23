@@ -30,6 +30,8 @@ urlpatterns = [
     path('auth/', include('users.urls')),
     path('api/', include('api.urls', namespace='api')),
     path('about/', include('about.urls', namespace='about')),
+    path('shopping_list/', include('shopping_list.urls',
+         namespace='shopping_list')),
     path('', include('recipes.urls', namespace='recipes')),
 ]
 

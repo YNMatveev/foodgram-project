@@ -10,7 +10,6 @@ from recipes.models import Ingredient, IngredientRecipeMap, Recipe
 User = get_user_model()
 
 
-# Defining a factory
 class UserFactory(DjangoModelFactory):
     class Meta:
         model = User

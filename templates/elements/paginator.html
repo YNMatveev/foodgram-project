@@ -1,4 +1,4 @@
-      
+
         <nav class="pagination" aria-label="Search results pages">
             <ul class="pagination__container">
 
@@ -24,10 +24,10 @@
                 {% endfor %}
 
 
-                {% if page_obj.number <= 2 and page_obj.paginator.num_pages >= 4 %}
+                {% if page_obj.number <= 2 and page_obj.paginator.num_pages > 4 %}
                 <li class="pagination__item"><a class="pagination__link link" href="?page={{ page_obj.number|add:3 }}"> {{ page_obj.number|add:3 }} </a></li>
                 {% endif %}
-                {% if page_obj.number == 1 and page_obj.paginator.num_pages >= 5 %}
+                {% if page_obj.number == 1 and page_obj.paginator.num_pages > 5 %}
                 <li class="pagination__item"><a class="pagination__link link" href="?page={{ page_obj.number|add:4 }}"> {{ page_obj.number|add:4 }} </a></li>
                 {% endif %}
 

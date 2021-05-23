@@ -1,0 +1,9 @@
+from django.urls import path
+from shopping_list import views
+
+
+app_name = 'shopping_list'
+
+urlpatterns = [
+    path('', views.ShoppingListView.as_view(), name='main'),
+]
