@@ -65,7 +65,8 @@ class RecipeModelTest(TestCase):
         super().setUpClass()
 
     def setUp(self):
-        self.author = User.objects.create_user(username='Bill')
+        self.author = User.objects.create_user(username='Bill',
+                                               email='aa@aa.ru')
         self.recipe = create_test_recipe(author=self.author, title='Стейк')
 
     def test_verbose_name(self):
@@ -115,8 +116,8 @@ class FavoriteModelTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.author = User.objects.create_user('John')
-        cls.user = User.objects.create_user('Current_user')
+        cls.author = User.objects.create_user('John', email='aa@aa.ru')
+        cls.user = User.objects.create_user('Current_user', email='bb@bb.ru')
         cls.recipe = create_test_recipe(cls.author, 'Стейк')
         cls.favorite = Favorite.objects.create(chooser=cls.user,
                                                recipe=cls.recipe)
@@ -145,8 +146,8 @@ class SubscribeModelTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.author = User.objects.create_user('Author')
-        cls.user = User.objects.create_user('Subscriber')
+        cls.author = User.objects.create_user('Author', email='aa@aa.ru')
+        cls.user = User.objects.create_user('Subscriber', email='bb@bb.ru')
         cls.subscribe = Subscribe.objects.create(subscriber=cls.user,
                                                  author=cls.author)
 

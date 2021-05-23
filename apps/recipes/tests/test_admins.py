@@ -11,8 +11,10 @@ class RecipeAdminTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.author = User.objects.create_user(username='John')
-        cls.user = User.objects.create_user(username='User')
+        cls.author = User.objects.create_user(username='John',
+                                              email='aa@aa.ru')
+        cls.user = User.objects.create_user(username='User',
+                                            email='bb@bb.ru')
         cls.recipe = Recipe.objects.create(
             author=cls.author, title='Стейк', tags=Recipe.Tag.DINNER,
             description='Порядок приготовления', cooking_time=20
