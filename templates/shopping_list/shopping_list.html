@@ -22,7 +22,7 @@
         {% endfor %}
     </ul>
     {% if recipes %}
-        <a href="#"><button class="button button_style_blue" id='save_list'>Скачать список</button></a>
+        <a href="{% url 'shopping_list:download' %}"><button class="button button_style_blue" id='save_list'>Скачать список</button></a>
     {% endif %}
 
 </div>

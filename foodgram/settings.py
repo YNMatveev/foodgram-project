@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'users',
     'api',
     'about',
+    'shopping_list',
     'rest_framework',
     'django.contrib.auth',
     'django.contrib.contenttypes',
