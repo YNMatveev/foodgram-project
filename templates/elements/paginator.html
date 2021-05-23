@@ -4,36 +4,43 @@
 
 
                 {% if page_obj.has_previous %}
-                    <li class="pagination__item"><a class="pagination__link link" href="?page=1">Первая</a></li>
+                    <li class="pagination__item"><a class="pagination__link link" href="?page=1"><span class="icon-left"></span><span class="icon-left"></span></a></li>
                     <li class="pagination__item"><a class="pagination__link link" href="?page={{ page_obj.previous_page_number }}"><span class="icon-left"></span></a></li>
                 {% endif %}
 
-                {% if page_obj.number > page_obj.paginator.num_pages|add:-2 and page_obj.paginator.num_pages >= 4 %}
+                {% if page_obj.number == page_obj.paginator.num_pages|add:-1 and page_obj.paginator.num_pages >= 5 %}
                 <li class="pagination__item"><a class="pagination__link link" href="?page={{ page_obj.number|add:-3 }}"> {{ page_obj.number|add:-3 }} </a></li>
                 {% endif %}
                 {% if page_obj.number == page_obj.paginator.num_pages and page_obj.paginator.num_pages >= 5 %}
+                <li class="pagination__item"><a class="pagination__link link" href="?page={{ page_obj.number|add:-3 }}"> {{ page_obj.number|add:-3 }} </a></li>
                 <li class="pagination__item"><a class="pagination__link link" href="?page={{ page_obj.number|add:-4 }}"> {{ page_obj.number|add:-4 }} </a></li>
                 {% endif %}
-
+                {% if page_obj.number == page_obj.paginator.num_pages and page_obj.paginator.num_pages == 4 %}
+                <li class="pagination__item"><a class="pagination__link link" href="?page={{ page_obj.number|add:-3 }}"> {{ page_obj.number|add:-3 }} </a></li>
+                {% endif %}
 
                 {% for i in page_obj.paginator.page_range %}
                     {% if i >= page_obj.number|add:-2 and i <= page_obj.number|add:2 %}
                         <li class="pagination__item {% if i == page_obj.number %} pagination__item_active {% endif %}"><a class="pagination__link link" href="?page={{ i }}"> {{ i }} </a></li>
                     {% endif %}
-
                 {% endfor %}
 
 
-                {% if page_obj.number <= 2 and page_obj.paginator.num_pages > 4 %}
+                {% if page_obj.number == 2 and page_obj.paginator.num_pages >= 5 %}
                 <li class="pagination__item"><a class="pagination__link link" href="?page={{ page_obj.number|add:3 }}"> {{ page_obj.number|add:3 }} </a></li>
                 {% endif %}
-                {% if page_obj.number == 1 and page_obj.paginator.num_pages > 5 %}
+                {% if page_obj.number == 1 and page_obj.paginator.num_pages >= 5 %}
+                <li class="pagination__item"><a class="pagination__link link" href="?page={{ page_obj.number|add:3 }}"> {{ page_obj.number|add:3 }} </a></li>
                 <li class="pagination__item"><a class="pagination__link link" href="?page={{ page_obj.number|add:4 }}"> {{ page_obj.number|add:4 }} </a></li>
                 {% endif %}
+                {% if page_obj.number == 1 and page_obj.paginator.num_pages == 4 %}
+                <li class="pagination__item"><a class="pagination__link link" href="?page={{ page_obj.number|add:3 }}"> {{ page_obj.number|add:3 }} </a></li>
+                {% endif %}
+
 
                 {% if page_obj.has_next %}
                     <li class="pagination__item"><a class="pagination__link link" href="?page={{ page_obj.next_page_number }}"><span class="icon-right"></span></a></li>
-                    <li class="pagination__item"><a class="pagination__link link" href="?page={{ page_obj.paginator.num_pages }}">Последняя</a></li>
+                    <li class="pagination__item"><a class="pagination__link link" href="?page={{ page_obj.paginator.num_pages }}"><span class="icon-right"></span><span class="icon-right"></span></a></li>
                 {% endif %}
 
             </ul>

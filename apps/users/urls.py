@@ -10,5 +10,3 @@ urlpatterns = [
          views.ConfirmationCompleteView.as_view(),
          name='confirmation_complete'),
 ]
-
-import django.contrib.auth.urls

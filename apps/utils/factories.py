@@ -64,6 +64,7 @@ class RecipeFactory(DjangoModelFactory):
 class IngredientRecipeMapFactory(DjangoModelFactory):
     class Meta:
         model = IngredientRecipeMap
+        django_get_or_create = ('recipe',)
 
     recipe = factory.SubFactory(RecipeFactory)
     quantity = fuzzy.FuzzyInteger(1, 1000)

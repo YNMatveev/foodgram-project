@@ -19,12 +19,6 @@ class CreationForm(UserCreationForm):
         model = User
         fields = ('first_name', 'last_name', 'username', 'email',)
 
-        labels = {
-            'first_name': 'Имя',
-            'last_name': 'Фамилия',
-            'username': 'Имя пользователя',
-        }
-
     def __init__(self, request=None, *args, **kwargs):
         self.request = request
         super().__init__(*args, **kwargs)

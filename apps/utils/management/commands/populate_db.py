@@ -65,14 +65,3 @@ class Command(BaseCommand):
                 Subscribe(subscriber=user, author=author)
                 for author in for_subscribe
             ])
-
-        superadmin = User.objects.get(id=1)
-        Favorite.objects.bulk_create([
-            Favorite(chooser=superadmin, recipe=recipe)
-            for recipe in Recipe.objects.all()
-        ])
-
-        Subscribe.objects.bulk_create([
-            Subscribe(subscriber=superadmin, author=author)
-            for author in User.objects.exclude(id=1)
-        ])

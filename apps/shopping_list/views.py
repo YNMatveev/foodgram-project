@@ -1,12 +1,10 @@
-from django.shortcuts import render, redirect
-from recipes.models import IngredientRecipeMap, Recipe
-from django.views import generic
-from django.urls import reverse_lazy
 import pdfkit
-from django.template.loader import render_to_string, get_template
 from django.http import HttpResponse
-import os
-from django.conf import settings
+from django.shortcuts import redirect
+from django.template.loader import render_to_string
+from django.urls import reverse_lazy
+from django.views import generic
+from recipes.models import IngredientRecipeMap, Recipe
 
 
 class ShoppingListView(generic.TemplateView):
@@ -32,8 +30,6 @@ class DownloadShoppingList(generic.View):
     redirect_url = reverse_lazy('shopping_list:empty')
     template_name = 'shopping_list/download_list.html'
     context_name = 'ingredients'
-
-    print(reverse_lazy)
 
     def collect_ingredients(self, shopping_list):
         ingredients = IngredientRecipeMap.objects.filter(
@@ -70,35 +66,3 @@ class DownloadShoppingList(generic.View):
         response['Content-Disposition'] = (f'attachment; '
                                            f'filename="{self.filename}"')
         return response
-
-
-def download(request):
-    shopping_list = request.session.get('shopping_list', default=[])
-    if not shopping_list:
-        return ('В списке покупок нет ни одного рецепта')
-
-    ingredients = IngredientRecipeMap.objects.filter(
-        recipe_id__in=shopping_list).values_list(
-            'ingredient__name', 'quantity', 'ingredient__units')
-
-    required_ingredients = {}
-    for item in ingredients:
-        name, quantity, units = item
-        key = f'{name} ({units}.)'
-        required_ingredients.setdefault(key, 0)
-        required_ingredients[key] += quantity
-
-    html = render_to_string('shopping_list/download_list.html',
-                            {'ingredients': required_ingredients})
-
-    options = {
-        'enable-local-file-access': None
-    }
-
-    pdf = pdfkit.from_string(html, False, options)
-
-    filename = "required_ingredients.pdf"
-
-    response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
-    return response
