@@ -3,6 +3,7 @@ req_*.txt
 tmp/
 media/
 static/
+sent_emails/
 
 .DS_Store
 

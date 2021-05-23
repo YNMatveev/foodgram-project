@@ -1,9 +1,7 @@
 from rest_framework import status, permissions
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework import viewsets, mixins
 from recipes.models import Favorite, Subscribe, Ingredient
-from django.shortcuts import get_object_or_404
 from api.serializers import IngredientSerializer
 from rest_framework import filters
 
@@ -38,8 +36,6 @@ class SubscribeViewSet(viewsets.ViewSet):
         author_id = request.data.get('id')
         _, created = Subscribe.objects.get_or_create(subscriber=request.user,
                                                      author_id=author_id)
-
-        print(author_id, created)
         if created:
             return Response({'success: true'}, status.HTTP_201_CREATED)
         return Response({'success: false'}, status.HTTP_400_BAD_REQUEST)
@@ -47,8 +43,6 @@ class SubscribeViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None):
         subscribe = Subscribe.objects.filter(subscriber=request.user,
                                              author_id=pk)
-        a = subscribe[0]
-        print(a.author, a.author.id, a.author.get_full_name(), 'deleted')
         if not subscribe.exists():
             return Response({'success: false'}, status.HTTP_400_BAD_REQUEST)
 

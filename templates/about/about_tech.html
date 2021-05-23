@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Технологии{% endblock %}
+
+{% load static %}
+
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'pages/single.css' %}">{% endblock %}
+
+{% block header %}Технологии{% endblock %}
+
+{% block content %}
+
+<div class="single-card__section">
+    <div class="single-card__items single-card__items_column">
+        <p class=" single-card__section-item">Проект разработан с помощью:</p>
+        <p class=" single-card__section-item">1. Python 3.9</p>
+        <p class=" single-card__section-item">2. Django</p>
+        <p class=" single-card__section-item">3. Django REST framework</p>
+
+        <p class=" single-card__section-item">Проект развернут на:</p>
+        <p class=" single-card__section-item">1. PostgreSQL</p>
+        <p class=" single-card__section-item">2. nginx</p>
+        <p class=" single-card__section-item">3. docker</p>
+    </div>
+</div>
+
+{% endblock %}

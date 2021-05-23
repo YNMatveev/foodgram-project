@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Подтверждение адреса электронной почты{% endblock %}
+
+{% load static %}
+
+
+
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'pages/index.css' %}">{% endblock %}
+
+{% block header %}Подтверждение адреса электронной почты{% endblock %}
+
+{% block content %}
+    {% if validlink %}
+    <div class="custom-center-block">
+        <p class="custom-text-block">Спасибо. Почтовый адрес подтвержден. Теперь вы можете войти под своей учетной записью</p>
+    </div>
+    {% else %}
+    <div class="custom-center-block">
+        <p class="custom-text-block">Ссылка подтверждения адреса электронной почты содержит ошибку или устарела.</p>
+    </div>
+
+    {% endif %}
+
+{% endblock %}

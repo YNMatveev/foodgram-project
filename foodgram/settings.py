@@ -34,14 +34,17 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'recipes',
+    'utils',
+    'users',
+    'api',
+    'about',
+    'rest_framework',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'recipes',
-    'utils',
-    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -56,10 +59,15 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'foodgram.urls'
 
+BASE_TEMPLATES_DIR = BASE_DIR.joinpath('templates')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR.joinpath('templates')],
+        'DIRS': [
+            BASE_TEMPLATES_DIR,
+            BASE_TEMPLATES_DIR.joinpath('auth'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -108,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -134,5 +142,11 @@ MEDIA_ROOT = BASE_DIR.joinpath('media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = 'recipes:index'
 
 #  TODO add real email authenfication
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = BASE_DIR.joinpath('sent_emails')
+
+AUTH_USER_MODEL = 'users.MyUser'

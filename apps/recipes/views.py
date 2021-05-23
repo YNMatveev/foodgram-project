@@ -5,14 +5,14 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Exists, OuterRef, Q
 from django.forms import ValidationError
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views import generic
 
 from recipes.forms import RecipeForm
 from recipes.models import Favorite, Recipe, Subscribe
 
-# Create your views here.
+
 User = get_user_model()
 
 ITEMS_PER_PAGE = 6
@@ -196,3 +196,16 @@ class RecipeDeleteView(LoginRequiredMixin, generic.DeleteView):
         if not recipe.author == self.request.user:
             ValidationError('Только автор может удалить рецепт')
         return recipe
+
+
+def page_not_found(request, exception):
+    return render(
+        request,
+        'misc/404.html',
+        {'path': request.path},
+        status=404
+    )
+
+
+def server_error(request):
+    return render(request, 'misc/500.html', status=500)

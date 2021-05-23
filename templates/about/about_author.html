@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Об авторе{% endblock %}
+
+{% load static %}
+
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'pages/single.css' %}">{% endblock %}
+
+{% block header %}Об авторе{% endblock %}
+
+{% block content %}
+
+<div class="single-card__section">
+    <div class="single-card__items single-card__items_column">
+        <p class=" single-card__section-item">Автор сайта: Юрий Матвеев</p>
+        <p class=" single-card__section-item">Страница на GitHub: <a href='https://github.com/YNMatveev'>https://github.com/YNMatveev</a></p>
+    </div>
+</div>
+
+{% endblock %}

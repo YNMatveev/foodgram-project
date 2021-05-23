@@ -64,7 +64,15 @@
         </div>
         <div class="single-card__section">
             <h3 class="single-card__section-title">Описание:</h3>
-            <p class=" single-card__section-text"> {{ recipe.description|linebreaksbr }}</p>
+            <p class="single-card__section-text"> {{ recipe.description|linebreaksbr }}</p>
+        </div>
+        <div class="single-card__section">
+            {% with created=recipe.created|date:"G:i, d E Y"  modified=recipe.modified|date:"G:i, d E Y" %}
+            <p class="single-card__text" style="color:lightslategray"> создан: {{ created }}</p>
+            {% if created != modified %}
+            <p class="single-card__text" style="color:lightslategray"> изменен: {{ modified }}</p>
+            {% endif %}
+            {% endwith %}
         </div>
     </div>
 </div>
@@ -86,9 +94,9 @@
     <script src="{% static 'js/components/Favorites.js' %}"></script>
     <script src="{% static 'js/components/Subscribe.js' %}"></script>
 
-    <script src="{% static 'singlePage.js' %}"></script>
+    <script src="{% static 'js/foodgram/singlePage.js' %}"></script>
 {% else %}
-    <script src="{% static 'singlePageNotAuth.js' %}"></script>
+    <script src="{% static 'js/foodgram/singlePageNotAuth.js' %}"></script>
 {% endif %}
 
 {% endblock %}

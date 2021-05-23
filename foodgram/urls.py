@@ -17,17 +17,24 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from django.conf.urls import handler404, handler500
+
 
 admin.site.site_header = "Foodgram Admin"
 admin.site.site_title = "Foodgram Admin Panel"
 admin.site.index_title = "Welcome to Foodgram"
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('recipes.urls', namespace='recipes')),
+    path('auth/', include('users.urls')),
     path('api/', include('api.urls', namespace='api')),
+    path('about/', include('about.urls', namespace='about')),
+    path('', include('recipes.urls', namespace='recipes')),
 ]
 
+handler404 = "recipes.views.page_not_found"  # noqa
+handler500 = "recipes.views.server_error"  # noqa
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,

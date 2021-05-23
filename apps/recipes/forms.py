@@ -1,4 +1,4 @@
-from django.forms import ModelForm, ValidationError, HiddenInput, CharField
+from django.forms import ModelForm, ValidationError
 
 from recipes.models import Ingredient, IngredientRecipeMap, Recipe
 
@@ -28,10 +28,6 @@ class RecipeForm(ModelForm):
             'cooking_time': 'Время приготовления',
             'description': 'Описание',
             'image': 'Загрузить фото',
-        }
-
-        requireds = {
-            'ingredients': False,
         }
 
     def __init__(self, *args, **kwargs):
@@ -78,18 +74,20 @@ class RecipeForm(ModelForm):
     def save(self, commit=True):
 
         recipe = super().save(commit=False)
-        recipe.save()
-        current_ingredients = recipe.required_ingredients.all()
-        if current_ingredients.exists():
-            current_ingredients.delete()
 
-        ingredients = self.cleaned_data.get('ingredients', [])
-        IngredientRecipeMap.objects.bulk_create(
-            [
-                IngredientRecipeMap(recipe=recipe, ingredient=ingredient,
-                                    quantity=quantity)
-                for (ingredient, quantity) in ingredients
-            ]
-        )
+        if commit:
+            recipe.save()
+            current_ingredients = recipe.required_ingredients.all()
+            if current_ingredients.exists():
+                current_ingredients.delete()
+
+            ingredients = self.cleaned_data.get('ingredients', [])
+            IngredientRecipeMap.objects.bulk_create(
+                [
+                    IngredientRecipeMap(recipe=recipe, ingredient=ingredient,
+                                        quantity=quantity)
+                    for (ingredient, quantity) in ingredients
+                ]
+            )
 
         return recipe

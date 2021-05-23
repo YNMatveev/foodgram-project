@@ -41,10 +41,10 @@ class Recipe(models.Model):
         verbose_name='Cooking time, minutes')
 
     slug = models.SlugField(max_length=200, verbose_name='Slug', unique=True,
-                            blank=True)
+                            blank=True, db_index=True)
 
     created = models.DateTimeField(verbose_name='Published Date',
-                                   auto_now_add=True)
+                                   auto_now_add=True, db_index=True)
 
     modified = models.DateTimeField(verbose_name='Modified Date',
                                     auto_now=True)
@@ -90,6 +90,12 @@ class IngredientRecipeMap(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                related_name='required_ingredients')
     quantity = models.PositiveIntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['recipe', 'ingredient'],
+                                    name='unique_ingredient')
+        ]
 
     def __str__(self):
         return (f'{self.ingredient.name.capitalize()} - {self.quantity} '

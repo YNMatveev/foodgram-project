@@ -13,13 +13,15 @@
                   <li class="nav__item"><a href="#" class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge" id="counter">4</span></li>
               </ul>
               <ul class="nav__items list">
+                  <!--
                   <li class="nav__item"><a href="{% url 'recipes:index' %}" class="link" target="_blank"><img src="{% static 'foodgram/img/foodgram_logo.png' %}" height="20px"></a></li>
+                  -->
                   {% if user.is_authenticated %}
-                  <li class="nav__item"><a href="#" class="nav__link link">Изменить пароль</a></li>
-                  <li class="nav__item"><a href="#" class="nav__link link">Выход</a></li>
+                  <li class="nav__item"><a href="{% url 'password_change' %}" class="nav__link link">Изменить пароль</a></li>
+                  <li class="nav__item"><a href="{% url 'logout' %}" class="nav__link link">Выход</a></li>
                   {% else %}
-                  <li class="nav__item"><a href="#" class="nav__link link">Войти</a></li>
-                  <li class="nav__item"><a href="#" class="button button_style_blue">Создать аккаунт</a></li>
+                  <li class="nav__item"><a href="{% url 'login' %}" class="nav__link link">Войти</a></li>
+                  <li class="nav__item"><a href="{% url 'signup' %}" class="button button_style_blue">Создать аккаунт</a></li>
                   {% endif %}
               </ul>
           </div>

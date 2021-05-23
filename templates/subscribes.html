@@ -18,8 +18,7 @@
         </div>
         <div class="card-user__body">
             <ul class="card-user__items">
-                {% for recipe in author.recipes.all %}
-                {% if forloop.counter <= 3 %}
+                {% for recipe in author.recipes.all|slice:":3" %}
                 <li class="card-user__item">
                     <div class="recipe">
                         <img src="{{ recipe.image.url }}" alt="какой-то-текст" class="recipe__image">
@@ -27,7 +26,6 @@
                         <p class="recipe__text"><span class="icon-time"></span> {{ recipe.cooking_time }} мин.</p>
                     </div>
                 </li>
-                {% endif %}
                 {% endfor %}
 
                 {% with author.recipes.count as count %}
@@ -47,13 +45,17 @@
           {% endif %}
         </div>
     </div>
+    {% empty %}
+        <div class="card-user__title">Вы не подпсаны ни на одного автора</div>
     {% endfor %}
 </div>
 
 {% endblock %}
 
 {% block pagination %}
-    {% include 'elements/paginator.html' %}
+    {% if authors %}
+        {% include 'elements/paginator.html' %}
+    {% endif %}
 {% endblock %}
 
 {% block scripts %}
@@ -63,5 +65,5 @@
     <script src="{% static 'js/components/Subscribe.js' %}"></script>
     <script src="{% static 'js/components/Header.js' %}"></script>
     <script src="{% static 'js/api/Api.js' %}"></script>
-    <script src="{% static 'myFollow.js' %}"></script>
+    <script src="{% static 'js/foodgram/myFollow.js' %}"></script>
 {% endblock %}
