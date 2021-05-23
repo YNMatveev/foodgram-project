@@ -9,9 +9,9 @@ Foodgram – это онлайн-сервис, где пользователи �
 - python 3.8.9
 - django 3.2.2
 - django rest framework 3.12.4
-- PostgreSQL 12.4
 
 future:
+- PostgreSQL 12.4
 - nginx 1.19.3
 - docker
 
