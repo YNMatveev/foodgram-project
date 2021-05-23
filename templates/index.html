@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}
+
+  {% with request.resolver_match.url_name as url_name %}
+    {% if url_name == 'favorites' %}
+      Избранное
+    {% else %}
+      Рецепты
+    {% endif %}
+  {% endwith %}
+
+{% endblock %}
+
+{% load static %}
+
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'pages/index.css' %}">{% endblock %}
+
+
+  {% block header %}
+    {% with request.resolver_match.url_name as url_name %}
+      {% if url_name == 'index' %} Рецепты {% endif %}
+      {% if url_name == 'profile' %} {% firstof author.get_full_name author %} {% endif %}
+      {% if url_name == 'favorites' %} Избранное {% endif %}
+    {% endwith %}
+  {% endblock %}
+
+
+{% block tags_filter %}
+  {% include 'elements/tags_filter.html' %}
+{% endblock %}
+
+
+{% block content %}
+
+  {% with request.resolver_match.url_name as url_name %}
+    {% if url_name == 'profile' and recipes and user.is_authenticated %}
+      <div class="author-subscribe" data-author="{{ author.id }}">
+        <p style="padding: 0 0 2em 0;">
+        {% if author.is_subscribe %}
+          <button class="button button_style_light-blue button_size_subscribe" name="subscribe">Отписаться от автора</button>
+        {% else %}
+          <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>
+        {% endif %}
+        </p>
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="card-list">
+    {% for recipe in recipes %}
+      {% include 'elements/recipes_list.html' %}
+    {% empty %}
+      <div class="card__title">Не найдено ни одного рецепта</div>
+    {% endfor %}
+  </div>
+
+{% endblock %}
+
+{% block pagination %}
+    {% if recipes %}
+      {% include 'elements/paginator.html' %}
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'js/components/MainCards.js' %}"></script>
+  <script src="{% static 'js/components/Purchases.js' %}"></script>
+  <script src="{% static 'js/config/config.js' %}"></script>
+  <script src="{% static 'js/components/CardList.js' %}"></script>
+  <script src="{% static 'js/components/Header.js' %}"></script>
+  <script src="{% static 'js/api/Api.js' %}"></script>
+
+  <!-- depends from url_name -->
+  {% with request.resolver_match.url_name as url_name %}
+    {% if user.is_authenticated %}
+      <script src="{% static 'js/components/Favorites.js' %}"></script>
+      <script src="{% static 'js/components/Subscribe.js' %}"></script>
+
+      {% if url_name == 'index' %}
+        <script src="{% static 'js/foodgram/indexAuth.js' %}"></script>
+      {% endif %}
+      {% if url_name == 'profile' %}
+        <script src="{% static 'js/components/AuthorRecipe.js' %}"></script>
+        <script src="{% static 'js/foodgram/authorRecipe.js' %}"></script>
+      {% endif %}
+      {% if url_name == 'favorites' %}
+        <script src="{% static 'js/foodgram/favorite.js' %}"></script>
+      {% endif %}
+
+    {% endif %}
+
+    {% if not user.is_authenticated %}
+      {% if url_name == 'index' %}
+        <script src="{% static 'js/foodgram/indexNotAuth.js' %}"></script>
+      {% endif %}
+      {% if url_name == 'profile' %}
+        <script src="{% static 'js/components/AuthorRecipe.js' %}"></script>
+        <script src="{% static 'js/foodgram/authorRecipeNotAuth.js' %}"></script>
+      {% endif %}
+
+    {% endif %}
+
+{% endwith %}
+
+{% endblock %}

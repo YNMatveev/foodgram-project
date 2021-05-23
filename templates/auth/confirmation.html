@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Ссылка на подтверждение email{% endblock %}
+
+{% load static %}
+
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'pages/index.css' %}">{% endblock %}
+
+{% block header %}Ссылка на подтверждение адреса электронной почты отправлена{% endblock %}
+
+{% block content %}
+
+    <div class="custom-center-block">
+            <p class="custom-text-block">
+                Проверьте свою почту, указанную при создании учетной записи<br>
+                вам должно прийти письмо со ссылкой для подтверджения пароля.
+            </p>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Подтвердите удаление рецепта
+{% endblock %}
+
+{% load static %}
+
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'pages/index.css' %}">{% endblock %}
+
+{% block header %}
+    Слуедующий рецепт будет удален. Вы уверены?
+{% endblock %}
+
+
+{% block content %}
+
+<main class="main container">
+    <form action="" method="post">  {% csrf_token %}
+        <div class="custom-center-block">
+            <div class="custom-button-block">
+                {% include 'elements/recipes_list.html' with recipe=object %}
+            </div>
+            <div class="custom-button-block">
+                <button class="button button_style_blue">Удалить</button>
+            </div>
+        </div>
+
+    </form>
+
+
+
+</main>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Список покупок{% endblock %}
+
+{% load static %}
+
+
+
+{% block stylesheet %}<link rel="stylesheet" href="{% static 'pages/index.css' %}">{% endblock %}
+
+{% block header %}Список покупок пуст{% endblock %}
+
+{% block content %}
+    <div class="custom-center-block">
+        <p class="custom-text-block">Вы не добавли ни одного рецепта в список покупок</p>
+    </div>
+{% endblock %}
