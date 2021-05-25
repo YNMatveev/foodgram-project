@@ -5,6 +5,9 @@ from recipes.models import Ingredient, IngredientRecipeMap, Recipe
 
 class RecipeForm(ModelForm):
 
+    LOOKUP_NAME = 'nameIngredient'
+    LOOKUP_VALUE = 'valueIngredient'
+
     class Meta:
         model = Recipe
         fields = ('title', 'tags', 'ingredients', 'cooking_time',
@@ -38,13 +41,14 @@ class RecipeForm(ModelForm):
         data = self.cleaned_data['ingredients']
         all_ingredients = Ingredient.objects.values_list('name', flat=True)
 
-        if 'nameIngredient' not in ' '.join(self.data.keys()):
+        candidates = [value for key, value in self.data.items()
+                      if 'nameIngredient' in key]
+
+        if not candidates:
             raise ValidationError(
                 'В рецепт нужно добавить минимум один "Ингредиент"'
             )
 
-        candidates = [value for key, value in self.data.items()
-                      if 'nameIngredient' in key]
         contains_duplicates = any(candidates.count(element) > 1
                                   for element in candidates)
 
@@ -55,13 +59,13 @@ class RecipeForm(ModelForm):
         recipe_ingredients = []
         for key, value in self.data.items():
 
-            if 'nameIngredient' in key:
+            if self.LOOKUP_NAME in key:
                 if value not in all_ingredients:
                     raise ValidationError(
                         f'{value}: Ингредиенты должны быть выбраны из списка')
                 ingredient_name = value
 
-            if 'valueIngredient' in key:
+            if self.LOOKUP_VALUE in key:
                 ingredient_value = value
                 recipe_ingredients.append(
                     (Ingredient.objects.get(name=ingredient_name),
@@ -78,15 +82,14 @@ class RecipeForm(ModelForm):
         if commit:
             recipe.save()
             current_ingredients = recipe.required_ingredients.all()
-            if current_ingredients.exists():
-                current_ingredients.delete()
+            current_ingredients.delete()
 
             ingredients = self.cleaned_data.get('ingredients', [])
             IngredientRecipeMap.objects.bulk_create(
                 [
                     IngredientRecipeMap(recipe=recipe, ingredient=ingredient,
                                         quantity=quantity)
-                    for (ingredient, quantity) in ingredients
+                    for ingredient, quantity in ingredients
                 ]
             )
 
