@@ -64,7 +64,7 @@ class PurchaseViewSet(viewsets.ViewSet):
         return Response({'success: true'}, status.HTTP_200_OK)
 
     def create(self, request):
-        assert 'id' in request.data
+        assert 'id' in request.data, 'В запросе не указан id рецепта'
         recipe_id = int(request.data.get('id'))
         shopping_list = request.session.get('shopping_list', default=[])
         if recipe_id in shopping_list:
