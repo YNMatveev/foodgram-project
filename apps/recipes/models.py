@@ -36,15 +36,14 @@ class Recipe(models.Model):
         related_name='recipes', verbose_name='Required ingredients')
 
     tags = MultiSelectField(verbose_name='Tags', choices=Tag.choices,
-                            default=Tag.BREAKFAST, max_length=100)
+                            default=Tag.BREAKFAST, max_length=30)
 
     cooking_time = models.PositiveIntegerField(
         verbose_name='Cooking time, minutes',
         validators=[MinValueValidator(1)]
     )
 
-    slug = models.SlugField(verbose_name='Slug', unique=True,
-                            blank=True, db_index=True)
+    slug = models.SlugField(verbose_name='Slug', blank=True, db_index=True)
 
     created = models.DateTimeField(verbose_name='Published Date',
                                    auto_now_add=True, db_index=True)
@@ -59,20 +58,12 @@ class Recipe(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        if self.id:
-            suffix = self.id
-        else:
-            last_id = Recipe.objects.aggregate(last=Max('id'))['last']
-            if not last_id:
-                last_id = 0
-            suffix = last_id + 1
-
-        self.slug = slugify(self.title)[:100] + '-' + str(suffix)
+        self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('recipes:recipe_details',
-                       kwargs={'slug': self.slug})
+                       kwargs={'slug': self.slug, 'id': self.id})
 
 
 class Ingredient(models.Model):
