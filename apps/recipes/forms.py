@@ -18,7 +18,8 @@ class RecipeForm(ModelForm):
             'tags': {'required': '"Теги" обязательное поле'},
             'cooking_time': {
                 'required': '"Время приготовления" обязательное поле',
-                'min_value': '"Время приготовления" должно быть положительным',
+                'min_value': ('"Время приготовления" не может быть меньше '
+                              '1 минуты'),
             },
             'description': {'required': '"Описание" обязательное поле'},
             'image': {'required': '"Картинка" обязательное поле'},
@@ -67,6 +68,10 @@ class RecipeForm(ModelForm):
 
             if self.LOOKUP_VALUE in key:
                 ingredient_value = value
+                if int(ingredient_value) <= 0:
+                    raise ValidationError(
+                        'Вес/количество ингредиента не может быть меньше 1'
+                    )
                 recipe_ingredients.append(
                     (Ingredient.objects.get(name=ingredient_name),
                      ingredient_value)

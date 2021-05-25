@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Max
 from django.urls import reverse
@@ -38,7 +39,9 @@ class Recipe(models.Model):
                             default=Tag.BREAKFAST, max_length=100)
 
     cooking_time = models.PositiveIntegerField(
-        verbose_name='Cooking time, minutes')
+        verbose_name='Cooking time, minutes',
+        validators=[MinValueValidator(1)]
+    )
 
     slug = models.SlugField(verbose_name='Slug', unique=True,
                             blank=True, db_index=True)
@@ -89,7 +92,7 @@ class IngredientRecipeMap(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.DO_NOTHING)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                related_name='required_ingredients')
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
 
     class Meta:
         constraints = [
