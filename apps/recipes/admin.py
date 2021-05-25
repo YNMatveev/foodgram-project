@@ -15,6 +15,7 @@ class IngredientRecipeMapInline(admin.TabularInline):
     model = IngredientRecipeMap
     raw_id_fields = ('ingredient',)
     extra = 1
+    min_num = 1
 
 
 class IngredientAdmin(admin.ModelAdmin):
