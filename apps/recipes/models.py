@@ -35,12 +35,12 @@ class Recipe(models.Model):
         related_name='recipes', verbose_name='Required ingredients')
 
     tags = MultiSelectField(verbose_name='Tags', choices=Tag.choices,
-                            default=Tag.BREAKFAST)
+                            default=Tag.BREAKFAST, max_length=100)
 
     cooking_time = models.PositiveIntegerField(
         verbose_name='Cooking time, minutes')
 
-    slug = models.SlugField(max_length=200, verbose_name='Slug', unique=True,
+    slug = models.SlugField(verbose_name='Slug', unique=True,
                             blank=True, db_index=True)
 
     created = models.DateTimeField(verbose_name='Published Date',
