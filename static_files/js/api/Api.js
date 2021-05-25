@@ -14,7 +14,7 @@ function getCookie(name) {
   return cookieValue;
 }
 
-const API_PATH = '/api';
+const API_PATH = '/api/v1';
 
 class Api {
     constructor(apiUrl) {
