@@ -1,5 +1,7 @@
 # Foodgram Продуктовый помощник
 
+![Foodgram Workflow Status](https://github.com/ynmatveev/foodgram-project/actions/workflows/yamdb_workflow.yml/badge.svg?branch=master&event=push)
+
 ### Описание
 
 
@@ -23,22 +25,84 @@ future:
 
 ### Демо приложения
 
-in progress
+Приложение развернуто по адресу: http://foodgram.ynm-project.online и можно проверить его функциональность.
+
+При регистрации нового пользователя на указанный почтовый адрес будет отравлено сообщение с временной ссылкой для подтверждения. Без подтверждения нельзя будет залогиниться.
+Письмо придет от yp-tester@yandex.ru
 
 ### Запуск приложения
 
-in progress
+Для запуска приложения вам потребуется установить git ([Установка git](https://git-scm.com/book/ru/v2/Введение-Установка-Git))  и docker ([Установка docker](https://www.docker.com/get-started)) на ваш компьютер.
 
 
-### Заполнение БД начальными данными
+Склонируйте приложение из репозитория на GitHUB. Для этого в терминале перейдите в директорию, в которую хотите скопировать приложение и выполните команду:
 
-Для тестирования работы проекта можно наполнить базу данных тестовыми данными.
+```bash
+$ git clone https://github.com/YNMatveev/foodgram-project
+```
+
+Из корневой директории проекта (там где находится файл **manage.py**) и
+выполните в терминале команду:
+
+```bash
+$ docker compose up -d
+```
+
+Докер соберет необходимые образы и запустит контейнеры в фоновом режиме.
+
+Далее можно подготовить базу данных вручную, либо запустить makefile
+
+### Подготовка базы данных вручную
+
+Для подготовки базы данных в терминале выполните команды:
+```bash
+$ docker compose exec web python manage.py makemigrations --noinput
+$ docker compose exec web python manage.py migrate --noinput
+```
+
+### Создание суперпользователя и доступ к админке
+Для создания суперпользователя в терминале выполните команду (заменив username, you_password и admin@email.fake на нужные):
+
+```bash
+$ docker compose exec web bash -c \
+"DJANGO_SUPERUSER_USERNAME=your_username \
+DJANGO_SUPERUSER_PASSWORD=your_password \
+DJANGO_SUPERUSER_EMAIL=admin@email.fake \
+python manage.py createsuperuser --noinput"
+```
+или с вводом нужных вам данных в терминале
+
+```bash
+$ docker compose exec web python manage.py createsuperuser
+```
+### Подготовка статики
+
+Чтобы собрать всю статику проекта, выполните:
+
+```bash
+$ docker compose exec web python manage.py collectstatic --noinput
+```
+
+### Наполнение БД начальными данными
+
+```bash
+$ docker compose exec web python manage.py fill_ingredient_db static_files/ingredients/ingredients.csv
+$ docker compose exec web python manage.py populate_db
+```
+
+Теперь можно зайти в админку по адресу:
+[http://localhost/admin/](http://localhost/admin/) или [http://127.0.0.1/admin/](http://127.0.0.1/admin/)
+
+
+### Подготовка и наполнение БД начальными данными c помощью makefile
+
+Для тестирования работы проекта можно подготовить и наполнить базу данных тестовыми данными.
 В корневой папке приложения подготовлен makefile.
 
 Для этого в терминале выполните команду:
 
 ```bash
-$ make populate_new_db
+$ docker compose exec web make first_time_prepare
 ```
 
 После запуска команды будут выполнены:
