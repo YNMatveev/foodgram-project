@@ -5,6 +5,7 @@ from rest_framework import filters, mixins, permissions, viewsets, status
 from django.contrib.auth import get_user_model
 
 from api.serializers import IngredientSerializer
+from shopping_list.views import PurchaseMixin
 
 User = get_user_model()
 
@@ -65,7 +66,7 @@ class IngredientViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     search_fields = ['name']
 
 
-class PurchaseViewSet(viewsets.ViewSet):
+class PurchaseViewSet(PurchaseMixin, viewsets.ViewSet):
 
     def get(self, request):
         return JsonResponse(SUCCESS_MESSAGE, status=status.HTTP_200_OK)
@@ -73,23 +74,22 @@ class PurchaseViewSet(viewsets.ViewSet):
     def create(self, request):
         assert 'id' in request.data, 'В запросе не указан id рецепта'
         recipe_id = int(request.data.get('id'))
-        shopping_list = request.session.get('shopping_list', default=[])
+        shopping_list = self.get_shopping_list(request)
         if recipe_id in shopping_list:
             return JsonResponse(FAIL_MESSAGE,
                                 status=status.HTTP_400_BAD_REQUEST)
-
         shopping_list.append(recipe_id)
-        request.session['shopping_list'] = shopping_list
+        self.update_shopping_list(request, shopping_list)
         return JsonResponse(SUCCESS_MESSAGE, status=status.HTTP_200_OK)
 
     def destroy(self, request, pk=None):
         pk = int(pk)
-        shopping_list = request.session.get('shopping_list', default=[])
+        shopping_list = self.get_shopping_list(request)
 
         if pk not in shopping_list:
             return JsonResponse(FAIL_MESSAGE,
                                 status=status.HTTP_400_BAD_REQUEST)
 
         shopping_list.remove(pk)
-        request.session['shopping_list'] = shopping_list
+        self.update_shopping_list(request, shopping_list)
         return JsonResponse(SUCCESS_MESSAGE, status=status.HTTP_200_OK)

@@ -5,17 +5,33 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import generic
 from recipes.models import IngredientRecipeMap, Recipe
+from shopping_list.models import Purchase
 
 
-class ShoppingListView(generic.TemplateView):
+class PurchaseMixin():
+
+    def get_shopping_list(self, request):
+        if request.user.is_authenticated:
+            obj, _ = Purchase.objects.get_or_create(user=request.user)
+            return obj.shopping_list
+        return request.session.get('shopping_list', default=[])
+
+    def update_shopping_list(self, request, shopping_list):
+        if request.user.is_authenticated:
+            _ = Purchase.objects.update_or_create(
+                user=request.user, defaults={'shopping_list': shopping_list})
+        else:
+            request.session['shopping_list'] = shopping_list
+
+
+class ShoppingListView(PurchaseMixin, generic.TemplateView):
 
     template_name = 'shopping_list/shopping_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        shopping_list = self.request.session.get('shopping_list', default=[])
+        shopping_list = self.get_shopping_list(self.request)
         self.recipes = Recipe.objects.filter(id__in=shopping_list)
-        self.request.session['shopping_list'] = shopping_list
         context['recipes'] = self.recipes
         return context
 
@@ -24,7 +40,7 @@ class EmptyShoppingList(generic.TemplateView):
     template_name = 'shopping_list/empty.html'
 
 
-class DownloadShoppingList(generic.View):
+class DownloadShoppingList(PurchaseMixin, generic.View):
 
     filename = 'required_ingredients.pdf'
     redirect_url = reverse_lazy('shopping_list:empty')
@@ -56,7 +72,7 @@ class DownloadShoppingList(generic.View):
         return pdf
 
     def get(self, request):
-        shopping_list = request.session.get('shopping_list', default=[])
+        shopping_list = self.get_shopping_list(request)
         if not shopping_list:
             return redirect(self.redirect_url)
 
