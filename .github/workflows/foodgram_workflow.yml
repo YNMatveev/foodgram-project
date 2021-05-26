@@ -68,7 +68,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           overwrite: true
           rm: true
-          source: "docker-compose.yaml,$HOME/.env,nginx/default.conf"
+          source: "docker-compose.yaml,.env,nginx/default.conf"
           target: "foodgram"
 
       - name: executing remote ssh commands to deploy
