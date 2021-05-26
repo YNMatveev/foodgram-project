@@ -34,15 +34,15 @@ class ListViewWithFilter(generic.ListView):
 
     def _update_filter(self):
         change_tag = self.request.GET.get('change_filter')
-        tags_filter = self._get_filter()
+        self.tags_filter = self._get_filter()
 
         if change_tag:
             if change_tag in tags_filter:
-                tags_filter.remove(change_tag)
+                self.tags_filter.remove(change_tag)
             else:
-                tags_filter.append(change_tag)
+                self.tags_filter.append(change_tag)
 
-        self.request.session['filter'] = tags_filter
+        self.request.session['filter'] = self.tags_filter
 
         return tags_filter
 
