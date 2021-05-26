@@ -16,6 +16,9 @@ class ShopList {
                 .then( e => {
                     item.remove();
                     this.counter.minusCounter();
+                    if (this.counter.counterNum == 0) {
+                        document.getElementById('download_button').remove();
+                    }
                 })
                 .catch( e => {
                     console.log(e)

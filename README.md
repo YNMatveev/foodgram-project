@@ -102,7 +102,7 @@ $ docker compose exec web python manage.py populate_db
 Для этого в терминале выполните команду:
 
 ```bash
-$ make first_time_prepare
+$ docker compose exec web make first_time_prepare
 ```
 
 После запуска команды будут выполнены:

@@ -1,53 +1,61 @@
-from rest_framework import status, permissions
-from rest_framework.response import Response
-from rest_framework import viewsets, mixins
-from recipes.models import Favorite, Subscribe, Ingredient
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from recipes.models import Favorite, Ingredient, Subscribe
+from rest_framework import filters, mixins, permissions, viewsets, status
+from django.contrib.auth import get_user_model
+
 from api.serializers import IngredientSerializer
-from rest_framework import filters
+from shopping_list.views import PurchaseMixin
+
+User = get_user_model()
 
 
-class FavoriteViewSet(viewsets.ViewSet):
+SUCCESS_MESSAGE = {'success': 'true'}
+FAIL_MESSAGE = {'success': 'false'}
+
+
+class ViewSetWithPermissions(viewsets.ViewSet):
 
     permission_classes = [permissions.IsAuthenticated]
+
+
+class FavoriteViewSet(ViewSetWithPermissions):
 
     def create(self, request):
         recipe_id = request.data.get('id')
         _, created = Favorite.objects.get_or_create(chooser=request.user,
                                                     recipe_id=recipe_id)
         if created:
-            return Response({'success: true'}, status.HTTP_201_CREATED)
-        return Response({'success: false'}, status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(SUCCESS_MESSAGE, status=status.HTTP_200_OK)
+        return JsonResponse(FAIL_MESSAGE, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
         favorite = Favorite.objects.filter(chooser=request.user,
                                            recipe_id=pk)
-        if not favorite.exists():
-            return Response({'success: false'}, status.HTTP_400_BAD_REQUEST)
-
         favorite.delete()
-        return Response({'success: true'}, status.HTTP_200_OK)
+        return JsonResponse(SUCCESS_MESSAGE, status=status.HTTP_200_OK)
 
 
-class SubscribeViewSet(viewsets.ViewSet):
-
-    permission_classes = [permissions.IsAuthenticated]
+class SubscribeViewSet(ViewSetWithPermissions):
 
     def create(self, request):
         author_id = request.data.get('id')
+        author = get_object_or_404(User, id=author_id)
+        if author == request.user:
+            return JsonResponse(FAIL_MESSAGE,
+                                status=status.HTTP_400_BAD_REQUEST)
+
         _, created = Subscribe.objects.get_or_create(subscriber=request.user,
-                                                     author_id=author_id)
+                                                     author=author)
         if created:
-            return Response({'success: true'}, status.HTTP_201_CREATED)
-        return Response({'success: false'}, status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(SUCCESS_MESSAGE, status=status.HTTP_200_OK)
+        return JsonResponse(FAIL_MESSAGE, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
         subscribe = Subscribe.objects.filter(subscriber=request.user,
                                              author_id=pk)
-        if not subscribe.exists():
-            return Response({'success: false'}, status.HTTP_400_BAD_REQUEST)
-
         subscribe.delete()
-        return Response({'success: true'}, status.HTTP_200_OK)
+        return JsonResponse(SUCCESS_MESSAGE, status=status.HTTP_200_OK)
 
 
 class IngredientViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
@@ -58,29 +66,30 @@ class IngredientViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     search_fields = ['name']
 
 
-class PurchaseViewSet(viewsets.ViewSet):
+class PurchaseViewSet(PurchaseMixin, viewsets.ViewSet):
 
     def get(self, request):
-        return Response({'success: true'}, status.HTTP_200_OK)
+        return JsonResponse(SUCCESS_MESSAGE, status=status.HTTP_200_OK)
 
     def create(self, request):
-        assert 'id' in request.data
+        assert 'id' in request.data, 'В запросе не указан id рецепта'
         recipe_id = int(request.data.get('id'))
-        shopping_list = request.session.get('shopping_list', default=[])
+        shopping_list = self.get_shopping_list(request)
         if recipe_id in shopping_list:
-            return Response({'success: false'}, status.HTTP_400_BAD_REQUEST)
-
+            return JsonResponse(FAIL_MESSAGE,
+                                status=status.HTTP_400_BAD_REQUEST)
         shopping_list.append(recipe_id)
-        request.session['shopping_list'] = shopping_list
-        return Response({'success: true'}, status.HTTP_200_OK)
+        self.update_shopping_list(request, shopping_list)
+        return JsonResponse(SUCCESS_MESSAGE, status=status.HTTP_200_OK)
 
     def destroy(self, request, pk=None):
         pk = int(pk)
-        shopping_list = request.session.get('shopping_list', default=[])
+        shopping_list = self.get_shopping_list(request)
 
         if pk not in shopping_list:
-            return Response({'success: false'}, status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(FAIL_MESSAGE,
+                                status=status.HTTP_400_BAD_REQUEST)
 
         shopping_list.remove(pk)
-        request.session['shopping_list'] = shopping_list
-        return Response({'success: true'}, status.HTTP_200_OK)
+        self.update_shopping_list(request, shopping_list)
+        return JsonResponse(SUCCESS_MESSAGE, status=status.HTTP_200_OK)

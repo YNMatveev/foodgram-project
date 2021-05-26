@@ -3,6 +3,7 @@ from django.utils.safestring import mark_safe
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth import get_user_model
+from pytils.translit import slugify
 
 from recipes.models import (Favorite, Ingredient, IngredientRecipeMap, Recipe,
                             Subscribe)
@@ -15,6 +16,7 @@ class IngredientRecipeMapInline(admin.TabularInline):
     model = IngredientRecipeMap
     raw_id_fields = ('ingredient',)
     extra = 1
+    min_num = 1
 
 
 class IngredientAdmin(admin.ModelAdmin):
@@ -38,6 +40,7 @@ class RecipeAdmin(admin.ModelAdmin):
     inlines = (IngredientRecipeMapInline,)
     readonly_fields = ('show_image', 'count_times_in_favorite', 'created',
                        'modified')
+    prepopulated_fields = {'slug': ('title',)}
 
     def show_image(self, obj):
         return mark_safe(f'<img src="{obj.image.url}" height="150px" />')

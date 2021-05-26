@@ -23,8 +23,8 @@ class IngredientModelTest(TestCase):
     def test_verbose_name(self):
         ingredient = IngredientModelTest.ingredient
         field_verboses = {
-            'name': 'Name',
-            'units': 'Units of measurements'
+            'name': 'Название',
+            'units': 'Ед.измерения'
         }
 
         for field, expected_value in field_verboses.items():
@@ -72,16 +72,16 @@ class RecipeModelTest(TestCase):
     def test_verbose_name(self):
 
         field_verboses = {
-            'title': 'Recipe Title',
+            'title': 'Название',
             'author': 'Recipe Author',
-            'description': 'Recipe Description',
-            'ingredients': 'Required ingredients',
-            'image': 'Photo of the dish',
+            'description': 'Рецепт',
+            'ingredients': 'Необходимые ингредиенты',
+            'image': 'Изображение',
             'tags': 'Tags',
-            'cooking_time': 'Cooking time, minutes',
-            'slug': 'Slug',
-            'created': 'Published Date',
-            'modified': 'Modified Date',
+            'cooking_time': 'Время приготовления в минутах',
+            'slug': 'Слаг',
+            'created': 'Дата создания',
+            'modified': 'Дата изменения',
         }
 
         for field, expected_value in field_verboses.items():
@@ -125,8 +125,8 @@ class FavoriteModelTest(TestCase):
     def test_verbose_name(self):
 
         field_verbose = {
-            'chooser': 'Chooser',
-            'recipe': 'Favorite recipe',
+            'chooser': 'Пользователь',
+            'recipe': 'Рецепт',
         }
 
         for field, expected_value in field_verbose.items():
@@ -154,8 +154,8 @@ class SubscribeModelTest(TestCase):
     def test_verbose_name(self):
 
         field_verboses = {
-            'author': 'Author',
-            'subscriber': 'Subscriber'
+            'author': 'Автор',
+            'subscriber': 'Пользователь'
         }
 
         for field, expected_value in field_verboses.items():

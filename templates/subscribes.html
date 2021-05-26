@@ -6,6 +6,7 @@
 {% block header %}Мои подписки{% endblock %}
 
 {% block content %}
+{% load correct_recipe_case %}
 <div class="card-list">
     {% for author in authors %}
     <div class="card-user" data-author="{{ author.id }}">
@@ -31,7 +32,7 @@
                 {% with author.recipes.count as count %}
                 {% if count > 3 %}
                 <li class="card-user__item">
-                    <a href="{% url 'recipes:profile' author %}" class="card-user__link link">Еще {{ count|add:-3 }} рецептов...</a>
+                    <a href="{% url 'recipes:profile' author %}" class="card-user__link link">Еще {{ count|add:-3|recipe_case }} ...</a>
                 </li>
                 {% endif %}
                 {% endwith %}

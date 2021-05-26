@@ -34,27 +34,20 @@ class ListViewWithFilter(generic.ListView):
 
     def _update_filter(self):
         change_tag = self.request.GET.get('change_filter')
-        tags_filter = self._get_filter()
+        self.tags_filter = self._get_filter()
 
         if change_tag:
-            if change_tag in tags_filter:
-                tags_filter.remove(change_tag)
+            if change_tag in self.tags_filter:
+                self.tags_filter.remove(change_tag)
             else:
-                tags_filter.append(change_tag)
+                self.tags_filter.append(change_tag)
 
-        self.request.session['filter'] = tags_filter
+        self.request.session['filter'] = self.tags_filter
 
-        return tags_filter
+        return self.tags_filter
 
     def _get_filter(self):
         return self.request.session.get('filter', default=self.DEFAULT_FILTER)
-
-    def get_queryset(self):
-
-        self.tags_filter = self._update_filter()
-        self.condition = self._get_conditions(self.tags_filter)
-
-        return None
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -72,7 +65,8 @@ class ListViewWithFilter(generic.ListView):
 
 class RecipeListView(ListViewWithFilter):
     def get_queryset(self):
-        super().get_queryset()
+        self.tags_filter = self._update_filter()
+        self.condition = self._get_conditions(self.tags_filter)
         queryset = Recipe.objects.filter(self.condition).annotate(
             is_favorite=Exists(Favorite.objects.filter(
                 chooser_id=self.request.user.id,
@@ -85,7 +79,8 @@ class RecipeListView(ListViewWithFilter):
 class ProfileListView(ListViewWithFilter):
 
     def get_queryset(self):
-        super().get_queryset()
+        self.tags_filter = self._update_filter()
+        self.condition = self._get_conditions(self.tags_filter)
         self.author = get_object_or_404(User, username=self.kwargs['username'])
         self.author.is_subscribe = Subscribe.objects.filter(
             subscriber_id=self.request.user.id,
@@ -93,7 +88,7 @@ class ProfileListView(ListViewWithFilter):
 
         queryset = self.author.recipes.filter(self.condition).annotate(
             is_favorite=Exists(Favorite.objects.filter(
-                chooser_id=self.request.user.id,
+                chooser=self.request.user,
                 recipe_id=OuterRef('pk'))
             )
         )
@@ -108,7 +103,8 @@ class ProfileListView(ListViewWithFilter):
 class FavoriteListView(LoginRequiredMixin, ListViewWithFilter):
 
     def get_queryset(self):
-        super().get_queryset()
+        self.tags_filter = self._update_filter()
+        self.condition = self._get_conditions(self.tags_filter)
         queryset = Recipe.objects.filter(
             self.condition,
             favorites__chooser__id=self.request.user.id).annotate(

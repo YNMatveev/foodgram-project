@@ -44,7 +44,7 @@
                         <input type="text" id="nameIngredient" class="form__input">
                         <div class="form__dropdown-items"></div>
                     </div>
-                    <input type="number" id="cantidad" class="form__input" min="0">
+                    <input type="number" id="cantidad" class="form__input" min="1">
                     <label for="cantidad" class="form__label" id="cantidadVal"></label>
                 </div>
                 <div class="form__field-group-ingredientes-container">
@@ -100,7 +100,7 @@
             {% if not update %}
                 <button class="button button_style_blue">Создать рецепт</button>
             {% else %}
-                <button class="button button_style_blue">Сохранить</button> <a style="margin-left: 2.5em" href="{% url 'recipes:delete_recipe' form.instance.slug %}" class="form__ingredient-link">Удалить</a>
+                <button class="button button_style_blue">Сохранить</button> <a style="margin-left: 2.5em" href="{% url 'recipes:delete_recipe' form.instance.id form.instance.slug %}" class="form__ingredient-link">Удалить</a>
             {% endif %}
         </div>
     </form>
