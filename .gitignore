@@ -4,6 +4,7 @@ tmp/
 media/*
 static/
 sent_emails/*
+all_project_credential
 
 .DS_Store
 

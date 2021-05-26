@@ -3,7 +3,8 @@ req_*.txt
 tmp/
 media/*
 static/
-sent_emkils/*
+sent_emails/*
+all_project_credential
 
 .DS_Store
 
