@@ -19,28 +19,3 @@ populate_new_db:
 	make su
 	python manage.py fill_ingredient_db static_files/ingredients/ingredients.csv
 	python manage.py populate_db
-	
-	
-DB_ENGINE=
-DB_HOST=
-DB_NAME=
-DB_PORT=
-POSTGRES_PASSWORD=
-POSTGRES_USER=
-
-DJANGO_ALLOWED_HOSTS=
-DJANGO_SECRET_KEY=
-
-EMAIL_HOST=
-EMAIL_HOST_PASSWORD=
-EMAIL_HOST_USER=
-EMAIL_PORT=
-EMAIL_TOKEN=
-
-USER=
-HOST=
-SSH_KEY=
-TELEGRAM_TO=
-TELEGRAM_TOKEN=
-DOCKER_PASSWORD=
-DOCKER_USERNAME=

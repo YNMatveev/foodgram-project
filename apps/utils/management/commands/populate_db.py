@@ -59,7 +59,8 @@ class Command(BaseCommand):
                 Favorite(chooser=user, recipe=recipe)
                 for recipe in to_favorite
             ])
-            authors = list(User.objects.exclude(id=1, username=user.username))
+            authors = list(User.objects.exclude(id=1).exclude(
+                username=user.username))
             for_subscribe = random.sample(authors, NUM_SUBSCRIBERS)
             Subscribe.objects.bulk_create([
                 Subscribe(subscriber=user, author=author)

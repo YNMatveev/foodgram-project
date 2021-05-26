@@ -80,7 +80,6 @@ class Ingredient(models.Model):
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиент'
 
-
     def __str__(self):
         return f'{self.name}, {self.units}'
 
@@ -92,7 +91,7 @@ class IngredientRecipeMap(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                related_name='required_ingredients',
                                verbose_name='Рецепт')
-    
+
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)],
                                            verbose_name='Количество')
 
@@ -121,7 +120,7 @@ class Favorite(models.Model):
     class Meta:
         verbose_name = 'Избранные рецепты'
         verbose_name_plural = 'Избранные рецепты'
-        
+
         constraints = [
             models.UniqueConstraint(fields=['chooser', 'recipe'],
                                     name='unique_favorites')
@@ -143,5 +142,8 @@ class Subscribe(models.Model):
         verbose_name_plural = 'Подписки'
         constraints = [
             models.UniqueConstraint(fields=['subscriber', 'author'],
-                                    name='unique_subscribe')
+                                    name='unique_subscribe'),
+            models.CheckConstraint(
+                check=~models.Q(author=models.F('subscriber')),
+                name='author_subscriber_not_equal')
         ]

@@ -50,10 +50,12 @@
             {% endif %}
             {% if user.is_authenticated %}
                 <li class="single-card__item">
+                {% if recipe.author != user %}
                 {% if is_subscribe %}
                     <button class="button button_style_light-blue button_size_subscribe" name="subscribe">Отписаться от автора</button>
                 {% else %}
                     <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>
+                {% endif %}
                 {% endif %}
                 </li>
             {% endif %}
