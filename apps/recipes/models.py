@@ -42,7 +42,7 @@ class Recipe(models.Model):
         validators=[MinValueValidator(1)]
     )
 
-    slug = models.SlugField(verbose_name='Slug', blank=True, db_index=True)
+    slug = models.SlugField(verbose_name='Слаг', blank=True, db_index=True)
 
     created = models.DateTimeField(verbose_name='Дата создания',
                                    auto_now_add=True, db_index=True)
