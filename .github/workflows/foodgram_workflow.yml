@@ -13,7 +13,7 @@ jobs:
       with:
         python-version: 3.8
     - name: Decrypt secret
-      run: ./.github/scripts/decrypt_secret.sh
+      run: ./.github/decrypt_secret.sh
       env:
           GPG_SECRET_PASSPHRASE: ${{ secrets.GPG_SECRET_PASSPHRASE }}
     - name: Install dependencies
