@@ -19,3 +19,4 @@ populate_new_db:
 	make su
 	python manage.py fill_ingredient_db static_files/ingredients/ingredients.csv
 	python manage.py populate_db
+
