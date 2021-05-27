@@ -1,6 +1,6 @@
 # Foodgram Продуктовый помощник
 
-![Foodgram Workflow Status](https://github.com/ynmatveev/foodgram-project/actions/workflows/foodgram_workflow.yml/badge.svg?branch=master&event=push)
+![Foodgram Workflow Status](https://github.com/ynmatveev/foodgram-project/actions/workflows/foodgram_workflow.yml/badge.svg?branch=main&event=push)
 
 ### Описание
 
