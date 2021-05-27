@@ -61,11 +61,12 @@ jobs:
             GPG_SECRET_PASSPHRASE: ${{ secrets.GPG_SECRET_PASSPHRASE }}
 
       - name: Test printing your secret (Remove this step in production)
-        run: pwd
-        run: cat $HOME/.env
-        run: cd $HOME
-        run: pwd
-        run: ls -a
+        script: |
+          pwd
+          cat $HOME/.env
+          cd $HOME
+          pwd
+          ls -a
 
       - name: Copy files via ssh
         uses: appleboy/scp-action@master
