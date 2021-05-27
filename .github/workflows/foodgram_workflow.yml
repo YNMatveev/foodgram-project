@@ -60,13 +60,6 @@ jobs:
         env:
             GPG_SECRET_PASSPHRASE: ${{ secrets.GPG_SECRET_PASSPHRASE }}
 
-      - name: Test printing your secret (Remove this step in production)
-        run: |
-          pwd
-          cd $GITHUB_WORKSPACE
-          pwd
-          ls -a
-
       - name: Copy files via ssh
         uses: appleboy/scp-action@master
         with:
