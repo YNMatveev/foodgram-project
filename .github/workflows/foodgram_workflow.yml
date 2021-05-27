@@ -24,9 +24,6 @@ jobs:
     - name: Lint with flake8
       run: flake8 .
 
-    - name: Test with unittest
-      run: python3 manage.py test -v 2 apps
-
   build_and_push_to_docker_hub:
     name: Push Docker image to Docker Hub
     if: github.ref == 'refs/heads/develop'
