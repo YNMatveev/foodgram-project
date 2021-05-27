@@ -29,7 +29,7 @@ sys.path.append(str(BASE_DIR.joinpath('apps')))
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = TRUE
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split()
 
@@ -38,6 +38,11 @@ ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split()
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
     'recipes',
     'utils',
     'users',
@@ -45,11 +50,6 @@ INSTALLED_APPS = [
     'about',
     'shopping_list',
     'rest_framework',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
 ]
 
 MIDDLEWARE = [
@@ -92,7 +92,7 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-if DEBUG:
+if not DEBUG:
 
     DATABASES = {
         'default': {
@@ -101,7 +101,7 @@ if DEBUG:
         }
     }
 
-if not DEBUG:
+if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': os.environ.get('DB_ENGINE'),
@@ -164,7 +164,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = 'recipes:index'
 
-if DEBUG:
+if not DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
     EMAIL_FILE_PATH = BASE_DIR.joinpath('sent_emails')
 else:
