@@ -12,10 +12,11 @@ su:
 	DJANGO_SUPERUSER_EMAIL=admin@email.fake \
 	python manage.py createsuperuser --noinput"
 
-populate_new_db:
+first_time_prepare:
 	if [ -a db.sqlite3 ]; then rm db.sqlite3; fi
 	python manage.py makemigrations
 	python manage.py migrate
 	make su
 	python manage.py fill_ingredient_db static_files/ingredients/ingredients.csv
 	python manage.py populate_db
+	python manage.py collectstatic

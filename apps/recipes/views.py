@@ -5,13 +5,13 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Exists, OuterRef, Q
 from django.forms import ValidationError
+from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views import generic
 
 from recipes.forms import RecipeForm
 from recipes.models import Favorite, Recipe, Subscribe
-
 
 User = get_user_model()
 
@@ -170,10 +170,10 @@ class RecipeUpdateView(LoginRequiredMixin, generic.UpdateView):
     template_name = 'recipe_form.html'
 
     def form_valid(self, form):
-        if form.instance.author_id == self.request.user.id:
+        if self.request.user.is_owner(form.instance):
             return super().form_valid(form)
         form.add_error(None, ValidationError(
-            {"author": "Только автор может редактировать рецепт"}))
+            {"Только автор может редактировать рецепт"}))
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
@@ -189,8 +189,8 @@ class RecipeDeleteView(LoginRequiredMixin, generic.DeleteView):
 
     def get_object(self, queryset=None):
         recipe = super(RecipeDeleteView, self).get_object()
-        if not recipe.author == self.request.user:
-            ValidationError('Только автор может удалить рецепт')
+        if not self.request.user.is_owner(recipe):
+            raise Http404()
         return recipe
 
 

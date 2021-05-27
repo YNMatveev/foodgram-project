@@ -38,7 +38,6 @@ class Command(BaseCommand):
                 tags_variations.append(', '.join(list(subset)))
 
         # Create all the users
-        UserFactory.reset_sequence(2)
         users = UserFactory.create_batch(NUM_USERS)
 
         # Create all the recipes

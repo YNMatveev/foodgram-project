@@ -73,7 +73,7 @@ class RecipeModelTest(TestCase):
 
         field_verboses = {
             'title': 'Название',
-            'author': 'Recipe Author',
+            'author': 'Автор',
             'description': 'Рецепт',
             'ingredients': 'Необходимые ингредиенты',
             'image': 'Изображение',
@@ -99,11 +99,11 @@ class RecipeModelTest(TestCase):
     def test_slugify(self):
         recipe = self.recipe
         slug = recipe.slug
-        self.assertEquals(slug, 'stejk-1')
+        self.assertEquals(slug, 'stejk')
 
     def test_slug_max_length(self):
         new_recipe = create_test_recipe(self.author, title='ш' * 100)
-        self.assertEquals(new_recipe.slug, 'sh' * 50 + '-2')
+        self.assertEquals(new_recipe.slug, 'sh' * 100)
 
     def test_recipe_author_change_to_deleted_after_delete_author(self):
         self.author.delete()
