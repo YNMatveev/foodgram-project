@@ -61,7 +61,7 @@ jobs:
             GPG_SECRET_PASSPHRASE: ${{ secrets.GPG_SECRET_PASSPHRASE }}
 
       - name: Test printing your secret (Remove this step in production)
-        script: |
+        run: |
           pwd
           cat $HOME/.env
           cd $HOME
