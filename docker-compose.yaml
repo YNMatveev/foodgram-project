@@ -9,7 +9,7 @@ services:
       - ./.env
 
   web:
-    images: ynmatveev/foodgram:latest
+    image: ynmatveev/foodgram:latest
     restart: always
     volumes:
       - static_value:/code/static/
