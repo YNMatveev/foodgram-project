@@ -63,8 +63,7 @@ jobs:
       - name: Test printing your secret (Remove this step in production)
         run: |
           pwd
-          cat $HOME/.env
-          cd $HOME
+          cd $GITHUB_WORKSPACE
           pwd
           ls -a
 
