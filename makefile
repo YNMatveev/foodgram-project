@@ -20,3 +20,4 @@ populate_new_db:
 	python manage.py fill_ingredient_db static_files/ingredients/ingredients.csv
 	python manage.py populate_db
 
+ && apt install wkhtmltopdf make -y
