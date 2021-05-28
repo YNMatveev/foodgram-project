@@ -88,7 +88,7 @@ class ProfileListView(ListViewWithFilter):
 
         queryset = self.author.recipes.filter(self.condition).annotate(
             is_favorite=Exists(Favorite.objects.filter(
-                chooser=self.request.user,
+                chooser_id=self.request.user.id,
                 recipe_id=OuterRef('pk'))
             )
         )
@@ -148,7 +148,7 @@ class SubscribeListView(LoginRequiredMixin, generic.ListView):
         return User.objects.filter(
             subscribers__subscriber__id=self.request.user.id).annotate(
                 is_subscribe=Exists(Subscribe.objects.filter(
-                    subscriber_id=self.request.user.id,
+                    subscriber=self.request.user,
                     author_id=OuterRef('pk'))
                 )
         )
