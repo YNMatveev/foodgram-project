@@ -1,8 +1,11 @@
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 from recipes.models import Favorite, Ingredient, Subscribe
 from rest_framework import filters, mixins, permissions, viewsets, status
 from django.contrib.auth import get_user_model
+"""
+from django.shortcuts import get_object_or_404
+from django.db import IntegrityError
+"""
 
 from api.serializers import IngredientSerializer
 from shopping_list.views import PurchaseMixin
@@ -15,47 +18,54 @@ fail_response = JsonResponse({'success': 'false'},
                              status=status.HTTP_400_BAD_REQUEST)
 
 
-class ViewSetWithPermissions(viewsets.ViewSet):
+class CreateDeleteView(viewsets.ViewSet):
 
     permission_classes = [permissions.IsAuthenticated]
 
+    model = None
+    user_field = None
+    object_field = None
 
-class FavoriteViewSet(ViewSetWithPermissions):
-
-    def create(self, request):
-        recipe_id = request.data.get('id')
-        _, created = Favorite.objects.get_or_create(chooser=request.user,
-                                                    recipe_id=recipe_id)
-        if created:
-            return success_response
-        return fail_response
-
-    def destroy(self, request, pk=None):
-        favorite = Favorite.objects.filter(chooser=request.user,
-                                           recipe_id=pk)
-        favorite.delete()
-        return success_response
-
-
-class SubscribeViewSet(ViewSetWithPermissions):
+    def get_kwargs(self, user, obj_id):
+        return {
+            f'{self.user_field}': user,
+            f'{self.object_field}_id': obj_id
+        }
 
     def create(self, request):
-        author_id = request.data.get('id')
-        author = get_object_or_404(User, id=author_id)
-        if author == request.user:
+        obj_id = request.data.get('id')
+        kwargs = self.get_kwargs(request.user, obj_id)
+        """
+        try:
+            self.model.objects.create(**kwargs)
+        except IntegrityError:
             return fail_response
-
-        _, created = Subscribe.objects.get_or_create(subscriber=request.user,
-                                                     author=author)
+        """
+        _, created = self.model.objects.get_or_create(**kwargs)
         if created:
             return success_response
         return fail_response
 
     def destroy(self, request, pk=None):
-        subscribe = Subscribe.objects.filter(subscriber=request.user,
-                                             author_id=pk)
-        subscribe.delete()
+        obj_id = pk
+        kwargs = self.get_kwargs(request.user, obj_id)
+        obj = self.model.objects.filter(**kwargs)
+        obj.delete()
         return success_response
+
+
+class FavoriteViewSet(CreateDeleteView):
+
+    model = Favorite
+    user_field = 'chooser'
+    object_field = 'recipe'
+
+
+class SubscribeViewSet(CreateDeleteView):
+
+    model = Subscribe
+    user_field = 'subscriber'
+    object_field = 'author'
 
 
 class IngredientViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
