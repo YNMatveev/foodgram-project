@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Exists, OuterRef, Q
 from django.forms import ValidationError
-from django.http import Http404
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views import generic
@@ -154,46 +154,6 @@ class SubscribeListView(LoginRequiredMixin, generic.ListView):
         )
 
 
-class RecipeCreateView(LoginRequiredMixin, generic.CreateView):
-    model = Recipe
-    form_class = RecipeForm
-    template_name = 'recipe_form.html'
-
-    def form_valid(self, form):
-        form.instance.author_id = self.request.user.id
-        return super().form_valid(form)
-
-
-class RecipeUpdateView(LoginRequiredMixin, generic.UpdateView):
-    model = Recipe
-    form_class = RecipeForm
-    template_name = 'recipe_form.html'
-
-    def form_valid(self, form):
-        if self.request.user.is_owner(form.instance):
-            return super().form_valid(form)
-        form.add_error(None, ValidationError(
-            {"Только автор может редактировать рецепт"}))
-        return super().form_invalid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['update'] = True
-        return context
-
-
-class RecipeDeleteView(LoginRequiredMixin, generic.DeleteView):
-    model = Recipe
-    success_url = reverse_lazy('recipes:index')
-    template_name = 'recipe_confirm_delete.html'
-
-    def get_object(self, queryset=None):
-        recipe = super(RecipeDeleteView, self).get_object()
-        if not self.request.user.is_owner(recipe):
-            raise Http404()
-        return recipe
-
-
 def page_not_found(request, exception):
     return render(
         request,
@@ -205,3 +165,62 @@ def page_not_found(request, exception):
 
 def server_error(request):
     return render(request, 'misc/500.html', status=500)
+
+
+class RecipeEditView(LoginRequiredMixin, generic.UpdateView):
+    model = Recipe
+    form_class = RecipeForm
+    success_delete_url = reverse_lazy('recipes:index')
+
+    post_url_name = 'new_recipe'
+    update_url_name = 'update_recipe'
+    delete_url_name = 'delete_recipe'
+
+    delete_template_name = 'recipe_confirm_delete.html'
+    form_template_name = 'recipe_form.html'
+
+    def get_url_name(self):
+        return self.request.resolver_match.url_name
+
+    def get_template_name(self):
+        if self.get_url_name() == self.delete_url_name:
+            return self.delete_template_name
+        return self.form_template_name
+
+    def get_object(self, queryset=None):
+        self.template_name = self.get_template_name()
+
+        try:
+            return super().get_object(queryset)
+        except AttributeError:
+            return None
+
+    def form_valid(self, form):
+        if self.get_url_name() == self.post_url_name:
+            form.instance.author_id = self.request.user.id
+            return super().form_valid(form)
+
+        if self.request.user.is_owner(form.instance):
+            return super().form_valid(form)
+        form.add_error(None, ValidationError(
+            {"Только автор может редактировать рецепт"}))
+        return super().form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.get_url_name() == self.update_url_name:
+            context['update'] = True
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if self.get_url_name() == self.delete_url_name:
+            return self.delete(request, *args, **kwargs)
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not self.request.user.is_owner(self.object):
+            return HttpResponseRedirect(self.object.get_absolute_url())
+        self.object.delete()
+        return HttpResponseRedirect(self.success_delete_url)
