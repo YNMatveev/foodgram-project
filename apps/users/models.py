@@ -8,3 +8,6 @@ class MyUser(AbstractUser):
 
     def is_owner(self, obj=None):
         return obj and obj.author.username == self.username
+
+    class Meta:
+        ordering = ('username',)
