@@ -1,14 +1,11 @@
+from django.contrib.auth import get_user_model
+from django.db import IntegrityError
 from django.http import JsonResponse
 from recipes.models import Favorite, Ingredient, Subscribe
-from rest_framework import filters, mixins, permissions, viewsets, status
-from django.contrib.auth import get_user_model
-"""
-from django.shortcuts import get_object_or_404
-from django.db import IntegrityError
-"""
+from rest_framework import filters, mixins, permissions, status, viewsets
 
-from api.serializers import IngredientSerializer
 from shopping_list.views import PurchaseMixin
+from api.serializers import IngredientSerializer
 
 User = get_user_model()
 
@@ -35,23 +32,20 @@ class CreateDeleteView(viewsets.ViewSet):
     def create(self, request):
         obj_id = request.data.get('id')
         kwargs = self.get_kwargs(request.user, obj_id)
-        """
         try:
             self.model.objects.create(**kwargs)
         except IntegrityError:
             return fail_response
-        """
-        _, created = self.model.objects.get_or_create(**kwargs)
-        if created:
-            return success_response
-        return fail_response
+        return success_response
 
     def destroy(self, request, pk=None):
         obj_id = pk
         kwargs = self.get_kwargs(request.user, obj_id)
         obj = self.model.objects.filter(**kwargs)
-        obj.delete()
-        return success_response
+        result = obj.delete()
+        if result:
+            return success_response
+        return fail_response
 
 
 class FavoriteViewSet(CreateDeleteView):
