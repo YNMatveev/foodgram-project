@@ -7,6 +7,4 @@ class MyUser(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
 
     def is_owner(self, obj=None):
-        if not obj or obj.author != self.username:
-            return False
-        return True
+        return obj and obj.author.username == self.username

@@ -33,14 +33,14 @@ Foodgram – это онлайн-сервис, где пользователи �
 Склонируйте приложение из репозитория на GitHUB. Для этого в терминале перейдите в директорию, в которую хотите скопировать приложение и выполните команду:
 
 ```bash
-$ git clone https://github.com/YNMatveev/foodgram-project
+git clone https://github.com/YNMatveev/foodgram-project
 ```
 
 Из корневой директории проекта (там где находится файл **manage.py**) и
 выполните в терминале команду:
 
 ```bash
-$ docker compose up -d
+docker-compose up -d
 ```
 
 Докер соберет необходимые образы и запустит контейнеры в фоновом режиме.
@@ -51,15 +51,15 @@ $ docker compose up -d
 
 Для подготовки базы данных в терминале выполните команды:
 ```bash
-$ docker compose exec web python manage.py makemigrations --noinput
-$ docker compose exec web python manage.py migrate --noinput
+docker-compose exec web python manage.py makemigrations --noinput
+docker-compose exec web python manage.py migrate --noinput
 ```
 
 ### Создание суперпользователя и доступ к админке
 Для создания суперпользователя в терминале выполните команду (заменив username, you_password и admin@email.fake на нужные):
 
 ```bash
-$ docker compose exec web bash -c \
+docker-compose exec web bash -c \
 "DJANGO_SUPERUSER_USERNAME=your_username \
 DJANGO_SUPERUSER_PASSWORD=your_password \
 DJANGO_SUPERUSER_EMAIL=admin@email.fake \
@@ -68,21 +68,21 @@ python manage.py createsuperuser --noinput"
 или с вводом нужных вам данных в терминале
 
 ```bash
-$ docker compose exec web python manage.py createsuperuser
+docker-compose exec web python manage.py createsuperuser
 ```
 ### Подготовка статики
 
 Чтобы собрать всю статику проекта, выполните:
 
 ```bash
-$ docker compose exec web python manage.py collectstatic --noinput
+docker-compose exec web python manage.py collectstatic --noinput
 ```
 
 ### Наполнение БД начальными данными
 
 ```bash
-$ docker compose exec web python manage.py fill_ingredient_db static_files/ingredients/ingredients.csv
-$ docker compose exec web python manage.py populate_db
+docker-compose exec web python manage.py fill_ingredient_db static_files/ingredients/ingredients.csv
+docker-compose exec web python manage.py populate_db
 ```
 
 Теперь можно зайти в админку по адресу:
@@ -97,7 +97,7 @@ $ docker compose exec web python manage.py populate_db
 Для этого в терминале выполните команду:
 
 ```bash
-$ docker compose exec web make first_time_prepare
+docker-compose exec web make first_time_prepare
 ```
 
 После запуска команды будут выполнены:
@@ -111,8 +111,8 @@ $ docker compose exec web make first_time_prepare
 
 ### Нужно исправить
 
-- изменить название модели Subscribe
-- заменить поля subscriber (модель Subscribe) и chooser(модель Favorite) на user
+- изменить название модели `Subscribe`
+- заменить поля `subscriber` (`модель Subscribe`) и `chooser`(`модель Favorite`) на `user`
 - добавить футер сайта в pdf файл
 - настроить отравку реальных писем
 - объеденить классы редактирования рецептов
