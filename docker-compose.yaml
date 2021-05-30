@@ -49,7 +49,7 @@ services:
     depends_on:
       - nginx
 
-    command: certonly --webroot --webroot-path=/var/www/html --email yptester@yandex.ru --agree-tos --no-eff-email --staging -d foodgram.ynm-project.online  -d www.foodgram.ynm-project.online
+    command: certonly --webroot --webroot-path=/var/html --email yptester@yandex.ru --agree-tos --no-eff-email --staging -d foodgram.ynm-project.online  -d www.foodgram.ynm-project.online
 
 volumes:
   postgres_data:
