@@ -25,7 +25,6 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
-      - "443:443"
 
     volumes:
       - ./nginx:/etc/nginx/conf.d
@@ -33,11 +32,11 @@ services:
       - certbot-var:/var/lib/letsencrypt
       - static_value:/var/html/static/
       - media_value:/var/html/media/
+      - web-root:/var/html/
 
     depends_on:
       - web
 
-    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
 
   certbot:
     image: certbot/certbot
