@@ -5,6 +5,7 @@ media/*
 static/
 sent_emails/*
 all_project_credential
+dhparam-2048.pem
 
 .DS_Store
 
