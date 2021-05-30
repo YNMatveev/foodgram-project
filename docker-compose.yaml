@@ -42,7 +42,6 @@ services:
 
   certbot:
     image: certbot/certbot
-    restart: unless-stopped
     volumes:
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
@@ -51,7 +50,7 @@ services:
     depends_on:
       - nginx
 
-    command: certonly --webroot --webroot-path=/var/html --email yptester@yandex.ru --agree-tos --no-eff-email --force-renewal -d foodgram.ynm-project.online  -d www.foodgram.ynm-project.online
+    command: certonly --webroot --webroot-path=/var/html --email yptester@yandex.ru --agree-tos --no-eff-email --force-renewal -d foodgram.ynm-project.online -d www.foodgram.ynm-project.online
 
 volumes:
   postgres_data:
