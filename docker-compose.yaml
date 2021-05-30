@@ -28,9 +28,9 @@ services:
       - "443:443"
 
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - ./nginx:/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
       - static_value:/var/html/static/
       - media_value:/var/html/media/
 
@@ -43,15 +43,17 @@ services:
     image: certbot/certbot
     restart: unless-stopped
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
 
     depends_on:
       - nginx
 
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    command: certonly --webroot --webroot-path=/var/www/html --email yptester@yandex.ru --agree-tos --no-eff-email --staging -d foodgram.ynm-project.online  -d www.foodgram.ynm-project.online
 
 volumes:
   postgres_data:
   static_value:
   media_value:
+  certbot-etc:
+  certbot-var:
